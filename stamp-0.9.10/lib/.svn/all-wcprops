@@ -1,0 +1,227 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/67/trunk/stamp-0.9.10/lib
+END
+hashtable.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/hashtable.h
+END
+set.h
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/set.h
+END
+types.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/types.h
+END
+heap.c
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/heap.c
+END
+heap.h
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/heap.h
+END
+hash.c
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/hash.c
+END
+LICENSE.rbtree
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/LICENSE.rbtree
+END
+hash.h
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/hash.h
+END
+pair.c
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/pair.c
+END
+pair.h
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/pair.h
+END
+avltree.c
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/avltree.c
+END
+vector.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/vector.c
+END
+lehigh.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/67/trunk/stamp-0.9.10/lib/lehigh.h
+END
+avltree.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/avltree.h
+END
+vector.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/vector.h
+END
+thread.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/thread.c
+END
+utility.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/utility.h
+END
+memory.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/memory.c
+END
+list.c
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/67/trunk/stamp-0.9.10/lib/list.c
+END
+bitmap.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/bitmap.c
+END
+thread.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/thread.h
+END
+memory.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/memory.h
+END
+random.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/random.c
+END
+list.h
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/67/trunk/stamp-0.9.10/lib/list.h
+END
+mt19937ar.c
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/mt19937ar.c
+END
+bitmap.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/bitmap.h
+END
+map.h
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/map.h
+END
+rbtree.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/67/trunk/stamp-0.9.10/lib/rbtree.c
+END
+queue.c
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/queue.c
+END
+mt19937ar.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/mt19937ar.h
+END
+random.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/random.h
+END
+timer.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/timer.h
+END
+tm.h
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/67/trunk/stamp-0.9.10/lib/tm.h
+END
+LEGALNOTICE.rbtree
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/LEGALNOTICE.rbtree
+END
+rbtree.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/rbtree.h
+END
+queue.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/queue.h
+END
+hashtable.c
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/lib/hashtable.c
+END

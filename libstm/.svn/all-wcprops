@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/164/trunk/libstm
+END
+profiling.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/58/trunk/libstm/profiling.hpp
+END
+WBMMPolicy.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/106/trunk/libstm/WBMMPolicy.cpp
+END
+UserConfig.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/libstm/UserConfig.cmake
+END
+inst.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/58/trunk/libstm/inst.hpp
+END
+hooks.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/99/trunk/libstm/hooks.cpp
+END
+txthread.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/162/trunk/libstm/txthread.cpp
+END
+types.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/74/trunk/libstm/types.cpp
+END
+cm.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/58/trunk/libstm/cm.hpp
+END
+irrevocability.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/123/trunk/libstm/irrevocability.cpp
+END
+profiling.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/58/trunk/libstm/profiling.cpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/164/trunk/libstm/CMakeLists.txt
+END
+inst.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/58/trunk/libstm/inst.cpp
+END

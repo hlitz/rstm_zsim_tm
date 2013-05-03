@@ -1,0 +1,233 @@
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/164/trunk/libstm/algs
+END
+tml_inline.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/libstm/algs/tml_inline.hpp
+END
+profiletm.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/libstm/algs/profiletm.cpp
+END
+profileapp.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/74/trunk/libstm/algs/profileapp.cpp
+END
+byear.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/74/trunk/libstm/algs/byear.cpp
+END
+cgl.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/74/trunk/libstm/algs/cgl.cpp
+END
+byeau.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/106/trunk/libstm/algs/byeau.cpp
+END
+pipeline.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/74/trunk/libstm/algs/pipeline.cpp
+END
+norec.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/74/trunk/libstm/algs/norec.cpp
+END
+ringala.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/libstm/algs/ringala.cpp
+END
+bitlazy.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/libstm/algs/bitlazy.cpp
+END
+byteeagerredo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/74/trunk/libstm/algs/byteeagerredo.cpp
+END
+mcs.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/74/trunk/libstm/algs/mcs.cpp
+END
+ctoken.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/74/trunk/libstm/algs/ctoken.cpp
+END
+algs.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/58/trunk/libstm/algs/algs.cpp
+END
+oreclazy.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/74/trunk/libstm/algs/oreclazy.cpp
+END
+RedoRAWUtils.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/libstm/algs/RedoRAWUtils.hpp
+END
+orecfair.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/164/trunk/libstm/algs/orecfair.cpp
+END
+nano.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/74/trunk/libstm/algs/nano.cpp
+END
+algs.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/164/trunk/libstm/algs/algs.hpp
+END
+biteagerredo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/74/trunk/libstm/algs/biteagerredo.cpp
+END
+tml.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/74/trunk/libstm/algs/tml.cpp
+END
+tmllazy.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/libstm/algs/tmllazy.cpp
+END
+ctokenturbo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/74/trunk/libstm/algs/ctokenturbo.cpp
+END
+norecprio.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/libstm/algs/norecprio.cpp
+END
+bytelazy.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/74/trunk/libstm/algs/bytelazy.cpp
+END
+oreceagerredo.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/74/trunk/libstm/algs/oreceagerredo.cpp
+END
+orecala.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/libstm/algs/orecala.cpp
+END
+byteeager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/libstm/algs/byteeager.cpp
+END
+swiss.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/74/trunk/libstm/algs/swiss.cpp
+END
+ringsw.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/74/trunk/libstm/algs/ringsw.cpp
+END
+orecela.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/libstm/algs/orecela.cpp
+END
+oreau.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/106/trunk/libstm/algs/oreau.cpp
+END
+serial.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/74/trunk/libstm/algs/serial.cpp
+END
+biteager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/74/trunk/libstm/algs/biteager.cpp
+END
+ticket.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/74/trunk/libstm/algs/ticket.cpp
+END
+tli.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/74/trunk/libstm/algs/tli.cpp
+END
+llt.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/74/trunk/libstm/algs/llt.cpp
+END
+oreceager.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/libstm/algs/oreceager.cpp
+END

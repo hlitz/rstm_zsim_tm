@@ -1,0 +1,137 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/81/trunk/stamp-0.9.10/ssca2
+END
+computeGraph.c
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/computeGraph.c
+END
+findSubGraphs.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/findSubGraphs.c
+END
+createPartition.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/createPartition.h
+END
+getUserParameters.c
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/getUserParameters.c
+END
+computeGraph.h
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/computeGraph.h
+END
+findSubGraphs.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/findSubGraphs.h
+END
+genScalData.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/genScalData.c
+END
+getUserParameters.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/getUserParameters.h
+END
+alg_radix_smp.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/alg_radix_smp.c
+END
+genScalData.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/genScalData.h
+END
+ssca2.c
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/ssca2.c
+END
+getStartLists.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/getStartLists.c
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/README
+END
+alg_radix_smp.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/alg_radix_smp.h
+END
+cutClusters.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/cutClusters.c
+END
+getStartLists.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/getStartLists.h
+END
+globals.c
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/globals.c
+END
+cutClusters.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/cutClusters.h
+END
+defs.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/defs.h
+END
+globals.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/globals.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/81/trunk/stamp-0.9.10/ssca2/CMakeLists.txt
+END
+createPartition.c
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/58/trunk/stamp-0.9.10/ssca2/createPartition.c
+END

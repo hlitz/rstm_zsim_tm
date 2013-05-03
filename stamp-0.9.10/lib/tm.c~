@@ -1,0 +1,4 @@
+void* hicamp_malloc(size_t size){
+  INSERT_MALLOC;
+  return malloc(size);
+  }

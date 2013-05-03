@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/67/trunk/stamp-0.9.10/intruder
+END
+error.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/error.h
+END
+stream.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/stream.h
+END
+decoder.c
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/decoder.c
+END
+dictionary.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/dictionary.c
+END
+packet.c
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/packet.c
+END
+detector.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/detector.c
+END
+dictionary.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/dictionary.h
+END
+decoder.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/decoder.h
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/README
+END
+packet.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/packet.h
+END
+detector.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/detector.h
+END
+preprocessor.c
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/preprocessor.c
+END
+preprocessor.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/preprocessor.h
+END
+stream.c
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/stream.c
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/67/trunk/stamp-0.9.10/intruder/CMakeLists.txt
+END
+intruder.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/stamp-0.9.10/intruder/intruder.c
+END

@@ -1,0 +1,173 @@
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/163/trunk/libitm2stm
+END
+BlockOperations.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/libitm2stm/BlockOperations.cpp
+END
+libitm-5.10.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/libitm2stm/libitm-5.10.cpp
+END
+UserConfig.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/72/trunk/libitm2stm/UserConfig.cmake
+END
+libitm-5.11.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/74/trunk/libitm2stm/libitm-5.11.cpp
+END
+libitm-5.12.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/161/trunk/libitm2stm/libitm-5.12.cpp
+END
+BlockOperations.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/libitm2stm/BlockOperations.h
+END
+libitm-5.15.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/libitm2stm/libitm-5.15.cpp
+END
+Extras.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/58/trunk/libitm2stm/Extras.cpp
+END
+libitm-5.16.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/161/trunk/libitm2stm/libitm-5.16.cpp
+END
+libitm-5.17.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/libitm2stm/libitm-5.17.cpp
+END
+Scope.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/160/trunk/libitm2stm/Scope.cpp
+END
+Extras.h
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/58/trunk/libitm2stm/Extras.h
+END
+CheckOffsets.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/libitm2stm/CheckOffsets.h
+END
+Scope.h
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/110/trunk/libitm2stm/Scope.h
+END
+Utilities.h
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/122/trunk/libitm2stm/Utilities.h
+END
+libitm-5.1,5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/162/trunk/libitm2stm/libitm-5.1,5.cpp
+END
+libitm-5.2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/libitm2stm/libitm-5.2.cpp
+END
+libitm-5.3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/libitm2stm/libitm-5.3.cpp
+END
+libitm-5.4.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/libitm2stm/libitm-5.4.cpp
+END
+Transaction.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/160/trunk/libitm2stm/Transaction.cpp
+END
+libitm-5.13,14.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/125/trunk/libitm2stm/libitm-5.13,14.cpp
+END
+libitm.h
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/161/trunk/libitm2stm/libitm.h
+END
+libitm-5.7.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/libitm2stm/libitm-5.7.cpp
+END
+libitm-5.8.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/libitm2stm/libitm-5.8.cpp
+END
+libitm-5.9.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/libitm2stm/libitm-5.9.cpp
+END
+Transaction.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/74/trunk/libitm2stm/Transaction.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/72/trunk/libitm2stm/CMakeLists.txt
+END
+Checkpoint.h
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/libitm2stm/Checkpoint.h
+END

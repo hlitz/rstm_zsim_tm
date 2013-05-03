@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/164/trunk/include/stm
+END
+lib_globals.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/74/trunk/include/stm/lib_globals.hpp
+END
+MiniVector.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/74/trunk/include/stm/MiniVector.hpp
+END
+metadata.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/include/stm/metadata.hpp
+END
+WBMMPolicy.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/include/stm/WBMMPolicy.hpp
+END
+txthread.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/164/trunk/include/stm/txthread.hpp
+END
+config.h.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/163/trunk/include/stm/config.h.cmake
+END
+BitFilter.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/include/stm/BitFilter.hpp
+END
+macros.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/74/trunk/include/stm/macros.hpp
+END
+WriteSet.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/74/trunk/include/stm/WriteSet.hpp
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/163/trunk/include/stm/CMakeLists.txt
+END
+UndoLog.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/74/trunk/include/stm/UndoLog.hpp
+END
+ValueList.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/74/trunk/include/stm/ValueList.hpp
+END

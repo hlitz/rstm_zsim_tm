@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/81/trunk/stamp-0.9.10
+END
+LICENSE
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/58/trunk/stamp-0.9.10/LICENSE
+END
+UserConfig.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/67/trunk/stamp-0.9.10/UserConfig.cmake
+END
+AUTHORS
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/58/trunk/stamp-0.9.10/AUTHORS
+END
+VERSIONS
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/58/trunk/stamp-0.9.10/VERSIONS
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/58/trunk/stamp-0.9.10/README
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/67/trunk/stamp-0.9.10/CMakeLists.txt
+END
+STAMP_config.h.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/67/trunk/stamp-0.9.10/STAMP_config.h.cmake
+END

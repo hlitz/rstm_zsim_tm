@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/58/trunk/cmake/modules
+END
+AppendFlags.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/58/trunk/cmake/modules/AppendFlags.cmake
+END
+CustomAddExecutable.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/58/trunk/cmake/modules/CustomAddExecutable.cmake
+END
+AddTargetDefinitions.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/58/trunk/cmake/modules/AddTargetDefinitions.cmake
+END
+AppendProperty.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/cmake/modules/AppendProperty.cmake
+END
+FindOpenMP.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/cmake/modules/FindOpenMP.cmake
+END
+language_support.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/58/trunk/cmake/modules/language_support.cmake
+END

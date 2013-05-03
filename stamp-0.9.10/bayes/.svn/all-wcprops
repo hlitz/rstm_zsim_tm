@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/67/trunk/stamp-0.9.10/bayes
+END
+bayes.c
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/bayes.c
+END
+adtree.c
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/adtree.c
+END
+operation.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/operation.h
+END
+data.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/data.c
+END
+adtree.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/adtree.h
+END
+query.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/query.h
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/README
+END
+data.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/data.h
+END
+net.c
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/net.c
+END
+sort.c
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/sort.c
+END
+learner.c
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/learner.c
+END
+net.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/net.h
+END
+sort.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/sort.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/67/trunk/stamp-0.9.10/bayes/CMakeLists.txt
+END
+learner.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/bayes/learner.h
+END

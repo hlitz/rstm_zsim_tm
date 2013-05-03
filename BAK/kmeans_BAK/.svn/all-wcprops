@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/81/trunk/stamp-0.9.10/kmeans
+END
+LICENSE.kmeans
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/LICENSE.kmeans
+END
+kmeans.c
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/67/trunk/stamp-0.9.10/kmeans/kmeans.c
+END
+cluster.c
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/cluster.c
+END
+util.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/util.h
+END
+cluster.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/cluster.h
+END
+normal.c
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/normal.c
+END
+common.c
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/common.c
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/81/trunk/stamp-0.9.10/kmeans/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/README
+END
+normal.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/normal.h
+END
+common.h
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/stamp-0.9.10/kmeans/common.h
+END

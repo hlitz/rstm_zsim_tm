@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/67/trunk/stamp-0.9.10/yada
+END
+element.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/element.h
+END
+yada.c
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/yada.c
+END
+mesh.h
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/mesh.h
+END
+region.c
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/region.c
+END
+coordinate.c
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/coordinate.c
+END
+region.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/region.h
+END
+element.c
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/element.c
+END
+mesh.c
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/mesh.c
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/67/trunk/stamp-0.9.10/yada/CMakeLists.txt
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/README
+END
+coordinate.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/58/trunk/stamp-0.9.10/yada/coordinate.h
+END

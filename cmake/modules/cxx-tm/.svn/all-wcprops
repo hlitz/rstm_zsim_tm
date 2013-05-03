@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/58/trunk/cmake/modules/cxx-tm
+END
+CMakeCXX-tmCompilerABI.cxxtm.in
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/58/trunk/cmake/modules/cxx-tm/CMakeCXX-tmCompilerABI.cxxtm.in
+END
+CMakeCXX-tmCompiler.cmake.in
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/58/trunk/cmake/modules/cxx-tm/CMakeCXX-tmCompiler.cmake.in
+END
+CMakeCXX-tmInformation.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/58/trunk/cmake/modules/cxx-tm/CMakeCXX-tmInformation.cmake
+END
+CMakeDetermineCXX-tmCompiler.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/58/trunk/cmake/modules/cxx-tm/CMakeDetermineCXX-tmCompiler.cmake
+END
+CheckCXX-tmSourceCompiles.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/58/trunk/cmake/modules/cxx-tm/CheckCXX-tmSourceCompiles.cmake
+END
+CMakeTestCXX-tmCompiler.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/58/trunk/cmake/modules/cxx-tm/CMakeTestCXX-tmCompiler.cmake
+END

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/74/trunk/libitm2stm/arch/x86
+END
+offsets.h
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/58/trunk/libitm2stm/arch/x86/offsets.h
+END
+StackProtection.h
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/58/trunk/libitm2stm/arch/x86/StackProtection.h
+END
+_ITM_beginTransaction.S
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/58/trunk/libitm2stm/arch/x86/_ITM_beginTransaction.S
+END
+TypeAlignments.h
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/58/trunk/libitm2stm/arch/x86/TypeAlignments.h
+END
+checkpoint_restore.S
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/58/trunk/libitm2stm/arch/x86/checkpoint_restore.S
+END
+checkpoint.h
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/74/trunk/libitm2stm/arch/x86/checkpoint.h
+END

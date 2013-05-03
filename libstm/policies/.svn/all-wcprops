@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/58/trunk/libstm/policies
+END
+cbr.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/58/trunk/libstm/policies/cbr.cpp
+END
+static.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/58/trunk/libstm/policies/static.cpp
+END
+policies.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/libstm/policies/policies.cpp
+END
+initializers.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/58/trunk/libstm/policies/initializers.hpp
+END
+policies.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/58/trunk/libstm/policies/policies.hpp
+END
