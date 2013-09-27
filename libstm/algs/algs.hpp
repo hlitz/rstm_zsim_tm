@@ -108,6 +108,7 @@ namespace stm
       bool  (*TM_FASTCALL begin) (TxThread*);
       void  (*TM_FASTCALL commit)(TxThread*);
       void* (*TM_FASTCALL read)  (STM_READ_SIG(,,));
+      void* (*TM_FASTCALL read_promo)  (STM_READ_SIG(,,));
       void  (*TM_FASTCALL write) (STM_WRITE_SIG(,,,));
 
       /**
@@ -251,6 +252,20 @@ namespace stm
       Trigger::onCommitSTM(tx);
   }
 
+  inline void OnReadWriteCommit(TxThread* tx, ReadBarrier read_ro, ReadBarrier read_ro_promo,
+                                WriteBarrier write_ro, CommitBarrier commit_ro)
+  {
+      tx->allocator.onTxCommit();
+      tx->abort_hist.onCommit(tx->consec_aborts);
+      tx->consec_aborts = 0;
+      ++tx->num_commits;
+      tx->tmread = read_ro;
+      tx->tmread_promo = read_ro_promo;
+      tx->tmwrite = write_ro;
+      tx->tmcommit = commit_ro;
+      Trigger::onCommitSTM(tx);
+  }
+
   inline void OnReadWriteCommit(TxThread* tx)
   {
       tx->allocator.onTxCommit();
@@ -291,6 +306,15 @@ namespace stm
       tx->tmcommit = commit_rw;
   }
 
+  inline void OnFirstWrite(TxThread* tx, ReadBarrier read_rw, ReadBarrier read_rw_promo,
+                           WriteBarrier write_rw, CommitBarrier commit_rw)
+  {
+      tx->tmread = read_rw;
+      tx->tmread_promo = read_rw_promo;
+      tx->tmwrite = write_rw;
+      tx->tmcommit = commit_rw;
+  }
+
   inline void PreRollback(TxThread* tx)
   {
       ++tx->num_aborts;
@@ -303,6 +327,21 @@ namespace stm
       tx->allocator.onTxAbort();
       tx->nesting_depth = 0;
       tx->tmread = read_ro;
+      tx->tmwrite = write_ro;
+      tx->tmcommit = commit_ro;
+      Trigger::onAbort(tx);
+      scope_t* scope = tx->scope;
+      tx->scope = NULL;
+      return scope;
+  }
+
+  inline scope_t* PostRollback(TxThread* tx, ReadBarrier read_ro, ReadBarrier read_ro_promo,
+                               WriteBarrier write_ro, CommitBarrier commit_ro)
+  {
+      tx->allocator.onTxAbort();
+      tx->nesting_depth = 0;
+      tx->tmread = read_ro;
+      tx->tmread_promo = read_ro_promo;
       tx->tmwrite = write_ro;
       tx->tmcommit = commit_ro;
       Trigger::onAbort(tx);
@@ -335,6 +374,22 @@ namespace stm
       tx->allocator.onTxAbort();
       tx->nesting_depth = 0;
       tx->tmread = r;
+      tx->tmwrite = w;
+      tx->tmcommit = c;
+      scope_t* scope = tx->scope;
+      tx->scope = NULL;
+      return scope;
+  }
+
+  inline scope_t*
+  PostRollbackNoTrigger(TxThread* tx,
+                        stm::ReadBarrier r, stm::ReadBarrier r_promo, stm::WriteBarrier w,
+                        stm::CommitBarrier c)
+  {
+      tx->allocator.onTxAbort();
+      tx->nesting_depth = 0;
+      tx->tmread = r;
+      tx->tmread_promo = r_promo;
       tx->tmwrite = w;
       tx->tmcommit = c;
       scope_t* scope = tx->scope;

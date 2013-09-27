@@ -405,11 +405,13 @@ TMqueue_push (TM_ARGDECL  queue_t* queuePtr, void* dataPtr)
     long push     = (long)TM_SHARED_READ_L(queuePtr->push);
     long capacity = (long)TM_SHARED_READ_L(queuePtr->capacity);
 
+    if(pop == push) std::cout << "pop " << pop << " push " << push << std::endl; 
     assert(pop != push);
-
+    assert(dataPtr!=NULL);
     /* Need to resize */
     long newPush = (push + 1) % capacity;
     if (newPush == pop) {
+      printf("resize\n");
         long newCapacity = capacity * QUEUE_GROWTH_FACTOR;
         void** newElements = (void**)TM_MALLOC(newCapacity * sizeof(void*));
         if (newElements == NULL) {
@@ -446,7 +448,7 @@ TMqueue_push (TM_ARGDECL  queue_t* queuePtr, void* dataPtr)
     TM_SHARED_WRITE_P(elements[push], dataPtr);
     TM_SHARED_WRITE_L(queuePtr->push, newPush);
     //printf("dummy write %p \n", &(queuePtr->pop));
-    TM_SHARED_WRITE_L(queuePtr->pop, pop); //dummy write to pop
+    //TM_SHARED_WRITE_L(queuePtr->pop, pop); //dummy write to pop
     
     return TRUE;
 }
@@ -494,7 +496,7 @@ TMqueue_pop (TM_ARGDECL  queue_t* queuePtr)
     void** elements = (void**)TM_SHARED_READ_P(queuePtr->elements);
     void* dataPtr = (void*)TM_SHARED_READ_P(elements[newPop]);
     TM_SHARED_WRITE_L(queuePtr->pop, newPop);
-
+    if(dataPtr == NULL) printf("pop %li push %li \n", pop, push);
     return dataPtr;
 }
 

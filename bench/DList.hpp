@@ -36,12 +36,9 @@ class DList
 
     DList();
 
-  //Init function (C Constructor)
-    TM_CALLABLE
-    void DListInit();
     // insert a node if it doesn't already exist
     TM_CALLABLE
-    void insert(int val TM_ARG);
+    bool insert(int val TM_ARG);
 
     // true iff val is in the data structure
     TM_CALLABLE
@@ -49,7 +46,7 @@ class DList
 
     // remove a node if its value = val
     TM_CALLABLE
-    void remove(int val TM_ARG);
+    bool remove(int val TM_ARG);
 
     // make sure the list is in sorted order
     bool isSane() const;
@@ -78,32 +75,30 @@ class DList
 
 
 // constructor: head and tail have extreme values, point to each other
-DList::DList() : head(new Node(-1)), tail(new Node(INT_MAX))
-{
-    head->m_next = tail;
-    tail->m_prev = head;
-}
-
-void DList::DListInit()
+DList::DList()// : head(new Node(-1)), tail(new Node(INT_MAX))
 {
   head = (Node*)hcmalloc(sizeof(Node));
-  head->m_val = -1;
   tail = (Node*)hcmalloc(sizeof(Node));
-  tail->m_val = INT_MAX;
-  head->m_next = tail;
-  tail->m_prev = head;
+  //std::cout << "alloc " << sentinel << std::endl;
+  new (head) Node(-1);
+  new (tail) Node(INT_MAX);
+
+    head->m_next = tail;
+    tail->m_prev = head;
 }
 
 // simple sanity check: make sure all elements of the list are in sorted order
 bool DList::isSane(void) const
 {
-    bool sane = false;
-    sane = true;
+  bool sane = false;
+  sane = true;
+  int elems = -1;
 
     // forward traversal
     const Node* prev(head);
     const Node* curr((prev->m_next));
     while (curr != NULL) {
+      elems++;
         // ensure sorted order
         if ((prev->m_val) >= (curr->m_val)) {
             sane = false;
@@ -119,6 +114,7 @@ bool DList::isSane(void) const
         prev = curr;
         curr = (curr->m_next);
     }
+    std::cout << "Elements in the List at End: " << elems << std::endl;
 
     // backward traversal
     prev = tail;
@@ -141,23 +137,22 @@ bool DList::isSane(void) const
     }
     return sane;
 }
-int no = 0;
-int yes = 0;
+
 // insert method; find the right place in the list, add val so that it is in
 // sorted order; if val is already in the list, exit without inserting
 TM_CALLABLE
-void DList::insert(int val TM_ARG)
+bool DList::insert(int val TM_ARG)
 {
     // traverse the list to find the insertion point
     const Node* prev(head);
-    const Node* curr(TM_READ(prev->m_next));
+    const Node* curr(TM_READ_PROMO(prev->m_next));
 
     while (curr != NULL) {
         if (TM_READ(curr->m_val) >= val)
             break;
 
         prev = curr;
-        curr = TM_READ(prev->m_next);
+        curr = TM_READ_PROMO(prev->m_next);
     }
 
     // now insert new_node between prev and curr
@@ -173,13 +168,9 @@ void DList::insert(int val TM_ARG)
 
         TM_WRITE(before->m_next, between);
         TM_WRITE(after->m_prev, between);
-	//std::cout <<"IND" << std::endl;
-	yes++;
+	return true;
     }
-    else {
-      //no++;
-      //std::cout<< "no istert"<< val <<" cuur" << curr->m_val << " no " << no << " yes " << yes <<std::endl;
-}
+    return false;
 }
 
 // search for a value
@@ -202,33 +193,35 @@ bool DList::lookup(int val TM_ARG) const
 
 // remove a node if its value == val
 TM_CALLABLE
-void DList::remove(int val TM_ARG)
+bool DList::remove(int val TM_ARG)
 {
     // find the node whose val matches the request
     const Node* prev(head);
-    const Node* curr(TM_READ(prev->m_next));
+    const Node* curr(TM_READ_PROMO(prev->m_next));
 
     while (curr != NULL) {
         // if we find the node, disconnect it and end the search
         if (TM_READ(curr->m_val) == val) {
             Node* before = const_cast<Node*>(prev);
-            Node* after(TM_READ(curr->m_next));
+            Node* after(TM_READ_PROMO(curr->m_next));
             TM_WRITE(before->m_next, after);
             TM_WRITE(after->m_prev, before);
 
             // delete curr...
             TM_FREE(const_cast<Node*>(curr));
+            return true;
             break;
         }
         else if (TM_READ(curr->m_val) > val) {
             // this means the search failed
+	  return false;
             break;
         }
 
         prev = curr;
-        curr = TM_READ(prev->m_next);
+        curr = TM_READ_PROMO(prev->m_next);
     }
-
+    return false;
 }
 
 TM_CALLABLE

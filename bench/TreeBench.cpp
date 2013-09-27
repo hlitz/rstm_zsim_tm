@@ -54,8 +54,10 @@ RBTree* SET;
 /*** Initialize the counter */
 void bench_init()
 {
-    SET = new RBTree();
-    SET = (RBTree*)hcmalloc(sizeof(RBTree));
+
+//SET = new RBTree();
+  SET = (RBTree*)hcmalloc(sizeof(RBTree));
+    new (SET) RBTree();
     SET->RBTreeInit();
     // warm up the datastructure
     TM_BEGIN_FAST_INITIALIZATION();
@@ -68,23 +70,28 @@ void bench_init()
 /*** Run a bunch of random transactions */
 void bench_test(uintptr_t, uint32_t* seed)
 {
+ TM_BEGIN(atomic){
+    for(int o=0; o<CFG.ops; o++){
+ 
     uint32_t val = rand_r(seed) % CFG.elements;
     uint32_t act = rand_r(seed) % 100;
     if (act < CFG.lookpct) {
-        TM_BEGIN(atomic) {
+      //TM_BEGIN(atomic) {
             SET->lookup(val TM_PARAM);
-        } TM_END;
+	    //} TM_END;
     }
     else if (act < CFG.inspct) {
-        TM_BEGIN(atomic) {
+      //TM_BEGIN(atomic) {
             SET->insert(val TM_PARAM);
-        } TM_END;
+	    //} TM_END;
     }
     else {
-        TM_BEGIN(atomic) {
+      //TM_BEGIN(atomic) {
             SET->remove(val TM_PARAM);
-        } TM_END;
+	    //} TM_END;
     }
+    }
+ }TM_END;
 }
 
 /*** Ensure the final state of the benchmark satisfies all invariants */

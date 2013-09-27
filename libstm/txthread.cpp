@@ -16,7 +16,7 @@
 #include "algs/tml_inline.hpp"
 #include "algs/algs.hpp"
 #include "inst.hpp"
-
+#include <fstream>
 #include "stm/lib_hicamp.h"
 
 using namespace stm;
@@ -38,13 +38,15 @@ namespace
   NORETURN void
   default_abort_handler(TxThread* tx)
   {
+    //    std::cout << "bort jmpbuf --------------" << std::endl;
       jmp_buf* scope = (jmp_buf*)TxThread::tmrollback(tx
 #if defined(STM_ABORT_ON_THROW)
                                                       , NULL, 0
 #endif
                                                );
       // need to null out the scope
-      longjmp(*scope, 1);
+      std::cout << "should not get here - longjmp" <<std::endl;
+      //longjmp(*scope, 1);
   }
 } // (anonymous namespace)
 
@@ -80,7 +82,8 @@ namespace stm
         nanorecs(64),
         begin_wait(0),
         strong_HG(),
-        irrevocable(false)
+        irrevocable(false),
+	txn(0)
   {
       // prevent new txns from starting.
       while (true) {
@@ -89,6 +92,7 @@ namespace stm
               break;
           spin64();
       }
+      
 
       // We need to be very careful here.  Some algorithms (at least TLI and
       // NOrecPrio) like to let a thread look at another thread's TxThread
@@ -198,7 +202,7 @@ namespace stm
       // register this restart
       ++tx->num_restarts;
       // call the abort code
-      std::cout << "txthread.cpp RESTART -> abort" << std::endl;
+      //std::cout << "txthread.cpp RESTART -> abort" << std::endl;
       tx->tmabort(tx);
   }
 
@@ -230,8 +234,64 @@ namespace stm
       }
       txn_count = rw_txns + ro_txns;
       pct_ro = (!txn_count) ? 0 : (100 * ro_txns) / txn_count;
+      /* std::ofstream myfile, myfiletxn;
+      myfile.open ("/home/hlitz/sourcecode/zsim_git/zsim/zsim/writeskews.txt");
+      myfiletxn.open ("/home/hlitz/sourcecode/zsim_git/zsim/zsim/writeskews_txn.txt");
+      std::set <uint64_t> unique_lines;*/
 
       std::cout << "Total nontxn work:\t" << nontxn_count << std::endl;
+      /*for (uint32_t i = 0; i < threadcount.val; i++) {
+	std::cout << "---------Writeskews of thread : " << i << "--------" << std::endl;
+	TxThread* tx = threads[i];*/
+	//tx->write_set.resize(tx->txn+1);
+	//copy raw write sets in per transaction write sets
+	/*for(auto it = tx->raw_write_set.begin(); it != tx->raw_write_set.end(); ++it){
+	  tx->write_set[it->first].push_back(it->second);
+	  }*/
+	
+	/*
+	  for(auto it = tx->raw_trace.begin(); it != tx->raw_trace.end(); ++it){
+	  bool found = false;
+	  for(auto itw = tx->write_set[it->txn].begin(); itw != tx->write_set[it->txn].end(); ++itw){
+	  if(*itw==it->addr){
+	  found = true;
+	  //std::cout << "found in wset" << std::endl;
+	  }
+	  }
+	  if(!found){
+	  for(uint64_t i= 0; i< it->size; ++i){
+	  //std::cout << std::hex << (uint64_t)it->strings[i] << std::endl;
+	  threads[0]->filtered_trace.insert(std::pair < uint64_t, uint64_t>((uint64_t)it->strings[i], it->txn));
+	  }
+	  }
+	  }*/
+	/*
+	for(auto it = tx->raw_trace.begin(); it!=tx->raw_trace.end(); ++it){
+	  for(auto it2 = it->begin(); it2!=it->end(); it2++){
+	    //std::cout << "new trx " << std::endl;
+	    for(uint64_t i= 0; i< it2->size; ++i){
+	      uint64_t codeline = (uint64_t)it2->strings[i];
+	      if(unique_lines.find(codeline) == unique_lines.end()){
+		//std::cout << std::hex << (uint64_t)it->strings[i] << std::endl;
+		myfile << "0x" << std::hex << codeline << std::endl;
+		myfiletxn <<  it2->txn << std::endl;
+		unique_lines.insert(codeline);
+		//std::cout << codeline << std::endl;
+	      }
+	    }
+	    //std::cout << "Writeskew in " << std::hex << it->first << std::endl;
+	    //myfile << "0x" << std::hex << it ->first << std::endl;
+	    //myfiletxn << it->second << std::endl;
+	    //std::string str = std::string("addr2line -e /home/hlitz/sourcecode/rstm_build/stamp-0.9.10/mapbench/mapbenchSTM64 ") + std::to_string((uint64_t)*it);
+	    //str << (uint64_t)*it;
+	    //std::cout << 
+	    //system(str.c_str());// << std::endl;
+	  }
+	}
+      }
+      myfile.close();
+      myfiletxn.close();*/
+      
 
       // if we ever switched to ProfileApp, then we should print out the
       // ProfileApp custom output.
@@ -368,7 +428,7 @@ namespace stm
           char* spc = getenv("STM_NUMPROFILES");
           if (spc != NULL)
               profile_txns = strtol(spc, 0, 10);
-          profiles = (dynprof_t*)hcmalloc(profile_txns * sizeof(dynprof_t));
+          profiles = (dynprof_t*)malloc(profile_txns * sizeof(dynprof_t));
           for (unsigned i = 0; i < profile_txns; i++)
               profiles[i].clear();
 

@@ -25,9 +25,19 @@
 #include "stm/UndoLog.hpp"
 #include "stm/ValueList.hpp"
 #include "WBMMPolicy.hpp"
+#include <map>
+#include <set>
 
 namespace stm
 {
+  struct backtrace_t{
+    uint64_t addr;
+    uint64_t txn;
+    uint64_t size;
+    uint64_t strings[8];
+    backtrace_t(uint64_t _addr, uint64_t _txn, uint64_t _size) : addr(_addr), txn(_txn), size(_size) {};
+  };
+
   /**
    *  The TxThread struct holds all of the metadata that a thread needs in
    *  order to use any of the STM algorithms we support.  In the past, this
@@ -89,11 +99,18 @@ namespace stm
       uint32_t       begin_wait;    // how long did last tx block at begin
       bool           strong_HG;     // for strong hourglass
       bool           irrevocable;   // tells begin_blocker that I'm THE ONE
+    uint64_t txn;
 
       /*** PER-THREAD FIELDS FOR ENABLING ADAPTIVITY POLICIES */
       uint64_t      end_txn_time;      // end of non-transactional work
       uint64_t      total_nontxn_time; // time on non-transactional work
 
+    /*** PER_THREAD FIELDS to perform write skew detection */
+    std::map <uint64_t, uint64_t > stack_trace;
+    std::map <uint64_t, uint64_t > filtered_trace;
+    std::vector < std::pair < uint64_t, uint64_t > > raw_write_set;
+    std::vector < std::vector < uint64_t > > write_set;
+    std::vector < std::vector < backtrace_t > > raw_trace;
       /*** POINTERS TO INSTRUMENTATION */
 
       /**
@@ -119,6 +136,7 @@ namespace stm
       /*** Per-thread commit, read, and write pointers */
       TM_FASTCALL void(*tmcommit)(TxThread*);
       TM_FASTCALL void*(*tmread)(STM_READ_SIG(,,));
+      TM_FASTCALL void*(*tmread_promo)(STM_READ_SIG(,,));
       TM_FASTCALL void(*tmwrite)(STM_WRITE_SIG(,,,));
 
       /**

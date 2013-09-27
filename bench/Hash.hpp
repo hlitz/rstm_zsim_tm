@@ -16,8 +16,8 @@
 // the Hash class is an array of N_BUCKETS LinkedLists
 class HashTable
 {
-  static const uint32_t N_SLOTS = 10000;
-  uint32_t N_BUCKETS;
+  uint32_t N_SLOTS;
+  static const uint32_t N_BUCKETS = 100;
 
     /**
      *  during a sanity check, we want to make sure that every element in a
@@ -40,14 +40,15 @@ class HashTable
     TM_CALLABLE
     void init(uint32_t _buckets)
   {
-    N_BUCKETS = _buckets;
-    bucket = (int **)hcmalloc(sizeof(uint32_t*)*N_BUCKETS);
-    bucket_entries = (uint32_t*)hcmalloc(sizeof(uint32_t)*N_BUCKETS);
+    N_SLOTS = _buckets;
+    std::cout << " buck " << N_BUCKETS << " slots " << N_SLOTS << std::endl;
+    bucket = (int **)hcmalloc(sizeof(uint64_t*)*N_BUCKETS);
+    bucket_entries = (uint32_t*)hcmalloc(sizeof(uint64_t)*N_BUCKETS);
     for(uint32_t i =0; i< N_BUCKETS; i++){
       bucket_entries[i] = 0;
     }
     for(uint32_t i =0; i< N_BUCKETS; i++){
-      bucket[i] = (int*)hcmalloc(sizeof(uint32_t)*N_SLOTS);
+      bucket[i] = (int*)hcmalloc(sizeof(uint64_t)*N_SLOTS);
     }
   }
 
@@ -71,6 +72,37 @@ class HashTable
 	if(val==TM_READ(bucket[buck][i])) found =true;
       }
       return found;
+    }
+
+  TM_CALLABLE
+  void update(int buck, int slot TM_ARG) const
+  {
+    //    std::cout << " addr " << (uint64_t)(&bucket[buck][slot]) << std::endl;
+    //int val = TM_READ(bucket[buck][slot]);
+	    //TM_WRITE(bucket[buck][i], 0);
+    TM_WRITE(bucket[buck][slot], 1);
+
+  }
+  
+
+    TM_CALLABLE
+    bool iterate(int val TM_ARG) const
+    {
+      //std::cout << "start iterate " << std::endl;
+      bool found =false;
+      for(uint32_t e = 0; e<N_BUCKETS; e++){
+	//	if(e>N_BUCKETS-3)std::cout << "hey we made it !! " << e<< std::endl;
+	uint32_t buck = e;// % N_BUCKETS;
+	uint32_t slots = N_SLOTS;//TM_READ(bucket_entries[buck]);
+	for(uint32_t i = 0; i<slots ; i++){
+	  val+=TM_READ(bucket[buck][i]);
+	}
+      }
+      //      std::cout << "end iterate " << std::endl;
+      if(val>25000)
+	return true;
+      else
+	return false;
     }
 
     TM_CALLABLE

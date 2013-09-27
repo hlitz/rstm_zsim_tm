@@ -38,6 +38,7 @@ namespace
   {
       // begin_CGL is external
       static TM_FASTCALL void* read(STM_READ_SIG(,,));
+      static TM_FASTCALL void* read_promo(STM_READ_SIG(,,));
       static TM_FASTCALL void write(STM_WRITE_SIG(,,,));
       static TM_FASTCALL void commit(TxThread*);
 
@@ -62,6 +63,11 @@ namespace
    */
   void*
   CGL::read(STM_READ_SIG(,addr,))
+  {
+      return *addr;
+  }
+  void*
+  CGL::read_promo(STM_READ_SIG(,addr,))
   {
       return *addr;
   }

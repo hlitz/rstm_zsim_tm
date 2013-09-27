@@ -40,6 +40,7 @@
  */
 
 #include "List.hpp"
+#include <time.h>
 
 
 
@@ -51,44 +52,83 @@
 
 /*** the list we will manipulate in the experiment */
 List* SET;
+int elems [32];
+int startelems = 0;
 
 /*** Initialize the counter */
 void bench_init()
 {
-    SET = new List();
-    // warm up the datastructure
+  //    SET = new List();
+  SET = (List*)hcmalloc(sizeof(List));
+  new (SET) List();
+  for(int i=0;i<32;i++){
+    elems[i] = 0;
+  }
+
+// warm up the datastructure
     //
     // NB: if we switch to CGL, we can initialize without transactions
-    TM_BEGIN_FAST_INITIALIZATION();
-    for (uint32_t w = 0; w < CFG.elements; w+=2)
-        SET->insert(w TM_PARAM);
-    TM_END_FAST_INITIALIZATION();
+  /*  TM_BEGIN(atomic){//_FAST_INITIALIZATION();
+    for (uint32_t w = 0; w < CFG.elements; w+=2){
+            startelems++;
+      //if(w%100==0)std::cout << "insert el" << w <<" "<< CFG.elements << std::endl;
+      SET->insert(w TM_PARAM);
+    }
+  }
+  TM_END;//_FAST_INITIALIZATION();*/
+    std::cout << "start elems  " << startelems << std::endl;
 }
 
 /*** Run a bunch of increment transactions */
-void bench_test(uintptr_t, uint32_t* seed)
+void bench_test(uintptr_t id, uint32_t* seed)
 {
-    uint32_t val = rand_r(seed) % CFG.elements;
-    uint32_t act = rand_r(seed) % 100;
-    if (act < CFG.lookpct) {
-        TM_BEGIN(atomic) {
-            SET->lookup(val TM_PARAM);
-        } TM_END;
+  // std::cout << "id " << id << " " <<(uint64_t)(*id) << std::endl;
+  //TM_BEGIN(atomic){
+    for(int o=0; o<CFG.ops; o++){
+      uint32_t val = rand_r(seed) % CFG.elements;
+      uint32_t act = rand_r(seed) % 100;
+      bool res = false;
+      if (act < CFG.lookpct) {
+	TM_BEGIN(atomic) {
+	  //	val = 2000;
+	  //SET->lookup(val TM_PARAM);
+	//val = 1999;
+	SET->lookup(val TM_PARAM);
+	} TM_END;
+      }
+      else if (act < CFG.inspct) {
+	//bool res = false;
+	TM_BEGIN(atomic) {
+	res = SET->insert(val TM_PARAM);
+	} TM_END;
+	if(res){
+	  //std::cout << "insert el " << val << std::endl; 
+	  elems[id]++;
+	}
+      }
+      else {
+	//bool res =false;
+	TM_BEGIN(atomic) {
+	res = SET->remove(val TM_PARAM);
+	} TM_END;
+	if(res){//std::cout << "remove el " << val << std::endl; 
+	  elems[id]--;
+	}
+      }
     }
-    else if (act < CFG.inspct) {
-        TM_BEGIN(atomic) {
-            SET->insert(val TM_PARAM);
-        } TM_END;
-    }
-    else {
-        TM_BEGIN(atomic) {
-            SET->remove(val TM_PARAM);
-        } TM_END;
-    }
+    //}
+//TM_END;
 }
 
 /*** Ensure the final state of the benchmark satisfies all invariants */
-bool bench_verify() { return SET->isSane(); }
+bool bench_verify() { 
+  int sum = 0;
+  for(int i=0; i<16; i++){
+    sum += elems[i];
+    std::cout << "tid " << i << " : " << elems[i] << std::endl; 
+  }
+  std::cout << "sum " << sum << " sum + startelems " << sum+startelems << std::endl;
+return SET->isSane(); }
 
 /**
  *  Step 4:

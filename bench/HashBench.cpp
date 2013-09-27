@@ -39,6 +39,7 @@
  */
 
 #include "Hash.hpp"
+#include <time.h>
 
 
 /**
@@ -55,7 +56,7 @@ void bench_init()
 {
   //SET = new HashTable();
   SET = (HashTable*)hcmalloc(sizeof(HashTable));
-  SET->init((CFG.elements/4));
+  SET->init((CFG.elements));
   std::cout << "startup " << std::endl;
   // warm up the datastructure
     TM_BEGIN_FAST_INITIALIZATION();
@@ -65,30 +66,63 @@ void bench_init()
       SET->insert(val TM_PARAM);
     }
     TM_END_FAST_INITIALIZATION();
+    std::cout << "end bench init " << std::endl;
 }
-
+uint64_t ctr =0;
 /*** Run a bunch of increment transactions */
 void bench_test(uintptr_t, uint32_t* seed)
 {
-  int val = rand_r(seed) % CFG.elements;
-    uint32_t act = rand_r(seed) % 100;
-    if (act < CFG.lookpct) {
-        TM_BEGIN(atomic) {
-            SET->lookup(val TM_PARAM);
-        } TM_END;
-    }
-    else if (act < CFG.inspct) {
-        TM_BEGIN(atomic) {
-            SET->insert(val TM_PARAM);
-        } TM_END;
-    }
-    else {
-        TM_BEGIN(atomic) {
-	  //std::cout << " val " << val << std::endl;
- 
-	  SET->remove(val TM_PARAM);
-        } TM_END;
-    }
+  //   for(uint32_t o=0; o<1/*CFG.ops*/; o++){
+  //std::cout << "seed " << *seed << std::endl;
+  uint32_t act = rand_r(seed) % 100;
+  if (act < CFG.lookpct) {
+
+       TM_BEGIN(atomic){
+	 int val = rand_r(seed) % CFG.elements;
+	 int buck = rand_r(seed) % 100;
+	 int slot = rand_r(seed) % (CFG.elements);
+	 //std::cout << " up " << buck<< " slot " << slot << std::endl;
+	 SET->update(buck, slot TM_PARAM);
+       
+	 //        TM_BEGIN(atomic) {
+	 // std::cout << "test " << ctr++ << std::endl;
+	 SET->iterate(val TM_PARAM);
+	 //std::cout << "--" <<std::endl;
+       } TM_END;
+     }
+     else{
+       TM_BEGIN(atomic){
+	 for(uint32_t o=0; o<CFG.ops; o++){
+	   int buck = rand_r(seed) % 100;
+	   int slot = rand_r(seed) % (CFG.elements);
+	   //std::cout << " up " << buck<< " slot " << slot << std::endl;
+	   SET->update(buck, slot TM_PARAM);
+	  
+	   //std::cout << " == " << std::endl;
+	   /*
+	     buck = 99-buck;
+	     if(buck<0) buck = 0;
+	     slot = CFG.elements-slot-1;
+	     if(slot<0) slot = 0;*/
+	 }
+      
+	 /*
+	   else if (act < CFG.inspct) {
+	   //TM_BEGIN(atomic) {
+	   SET->insert(val TM_PARAM);
+	   //} TM_END;
+	   }
+	   else {
+	   //TM_BEGIN(atomic) {
+	   //std::cout << " val " << val << std::endl;
+      
+	   SET->remove(val TM_PARAM);
+	   //} TM_END;
+	   }*/
+    
+       }TM_END;
+     }
+     //   }
 }
 
 /*** Ensure the final state of the benchmark satisfies all invariants */

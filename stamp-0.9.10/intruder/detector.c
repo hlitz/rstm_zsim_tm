@@ -77,7 +77,6 @@
 #include "preprocessor.h"
 #include "tm.h"
 #include "vector.h"
-#include "stm/lib_hicamp.h"
 
 
 struct detector {
@@ -96,12 +95,10 @@ detector_alloc ()
     detector_t* detectorPtr;
 
     detectorPtr = (detector_t*)SEQ_MALLOC(sizeof(detector_t));
-      
     if (detectorPtr) {
         detectorPtr->dictionaryPtr = dictionary_alloc();
         assert(detectorPtr->dictionaryPtr);
         detectorPtr->preprocessorVectorPtr = vector_alloc(1);
-	hcaddconstraint((long long unsigned int*)detectorPtr->preprocessorVectorPtr, (long long unsigned int*)detectorPtr->preprocessorVectorPtr);
         assert(detectorPtr->preprocessorVectorPtr);
     }
 
@@ -119,7 +116,6 @@ Pdetector_alloc ()
     detector_t* detectorPtr;
 
     detectorPtr = (detector_t*)P_MALLOC(sizeof(detector_t));
-      
     if (detectorPtr) {
         detectorPtr->dictionaryPtr = PDICTIONARY_ALLOC();
         assert(detectorPtr->dictionaryPtr);

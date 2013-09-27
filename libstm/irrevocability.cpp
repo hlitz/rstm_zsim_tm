@@ -64,6 +64,7 @@ namespace {
   inline void unset_irrevocable_barriers(TxThread& tx)
   {
       tx.tmread           = stms[curr_policy.ALG_ID].read;
+      tx.tmread_promo     = stms[curr_policy.ALG_ID].read_promo;
       tx.tmwrite          = stms[curr_policy.ALG_ID].write;
       tx.tmcommit         = stms[curr_policy.ALG_ID].commit;
       tx.tmrollback       = stms[curr_policy.ALG_ID].rollback;

@@ -230,6 +230,12 @@ namespace stm
   }
 
   template <typename T>
+  inline T stm_read_promo(T* addr, TxThread* thread)
+  {
+      return DISPATCH<T, sizeof(T)>::read_promo(addr, thread);
+  }
+
+  template <typename T>
   inline void stm_write(T* addr, T val, TxThread* thread)
   {
       DISPATCH<T, sizeof(T)>::write(addr, val, thread);
@@ -242,15 +248,22 @@ namespace stm
 #define TM_READ(var)       stm::stm_read(&var, tx)
 #define TM_WRITE(var, val) stm::stm_write(&var, val, tx)
 
+#define TM_READ_PROMO(var)       stm::stm_read_promo(&var, tx)
+
 /**
  *  This is the way to start a transaction
  */
+#define START_TRX asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx");
+#define END_TRX asm(" movl $1029, %ecx\n\t"  "xchg %rcx, %rcx");
+//setjmp(_jmpbuf)
 #define TM_BEGIN(TYPE)                                      \
     {                                                       \
     stm::TxThread* tx = (stm::TxThread*)stm::Self;          \
     jmp_buf _jmpbuf;                                        \
-    uint32_t abort_flags = setjmp(_jmpbuf);                 \
+    uint32_t abort_flags = 0;                 \
+    START_TRX                                               \
     stm::begin(tx, &_jmpbuf, abort_flags);                  \
+    END_TRX                                                 \
     CFENCE;                                                 \
     {
 

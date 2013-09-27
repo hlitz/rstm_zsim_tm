@@ -226,7 +226,6 @@ processPackets (void* argPtr)
                                   (PACKET_HEADER_LENGTH + packetPtr->length));
         TM_END();
         if (error) {
-	  printf("error : %i\n", error);
             /*
              * Currently, stream_generate() does not create these errors.
              */
@@ -359,6 +358,7 @@ MAIN(argc, argv)
     /*
      * Clean up
      */
+
     for (i = 0; i < numThread; i++) {
         vector_free(errorVectors[i]);
     }
@@ -367,15 +367,11 @@ MAIN(argc, argv)
     stream_free(streamPtr);
     dictionary_free(dictionaryPtr);
 
-    printf("TM shutdown \n");
     TM_SHUTDOWN();
-
-    printf("mem shotydown \n");
     P_MEMORY_SHUTDOWN();
 
     thread_shutdown();
 
-    printf("ret \n");
     MAIN_RETURN(0);
 }
 

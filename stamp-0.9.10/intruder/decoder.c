@@ -79,7 +79,7 @@
 #include "queue.h"
 #include "tm.h"
 #include "types.h"
-#include "stm/lib_hicamp.h"
+
 
 struct decoder {
     MAP_T* fragmentedMapPtr;  /* contains list of packet_t* */
@@ -104,9 +104,8 @@ decoder_t*
 decoder_alloc ()
 {
     decoder_t* decoderPtr;
-   
+
     decoderPtr = (decoder_t*)SEQ_MALLOC(sizeof(decoder_t));
-    hcaddconstraint((long long unsigned int*)decoderPtr, (long long unsigned int*)decoderPtr );
     if (decoderPtr) {
         decoderPtr->fragmentedMapPtr = MAP_ALLOC(NULL, NULL);
         assert(decoderPtr->fragmentedMapPtr);
@@ -224,7 +223,6 @@ decoder_process (decoder_t* decoderPtr, char* bytes, long numByte)
                 long i = 0;
                 list_iter_reset(&it, fragmentListPtr);
                 while (list_iter_hasNext(&it, fragmentListPtr)) {
-		  
                     packet_t* fragmentPtr =
                         (packet_t*)list_iter_next(&it, fragmentListPtr);
                     assert(fragmentPtr->flowId == flowId);
@@ -243,8 +241,7 @@ decoder_process (decoder_t* decoderPtr, char* bytes, long numByte)
                 char* dst = data;
                 list_iter_reset(&it, fragmentListPtr);
                 while (list_iter_hasNext(&it, fragmentListPtr)) {
-                
-		  packet_t* fragmentPtr =
+                    packet_t* fragmentPtr =
                         (packet_t*)list_iter_next(&it, fragmentListPtr);
                     memcpy(dst, (void*)fragmentPtr->data, fragmentPtr->length);
                     dst += fragmentPtr->length;
@@ -305,7 +302,7 @@ int_error_t
 TMdecoder_process (TM_ARGDECL  decoder_t* decoderPtr, char* bytes, long numByte)
 {
     bool_t status;
- 
+
     /*
      * Basic error checking
      */
@@ -315,7 +312,6 @@ TMdecoder_process (TM_ARGDECL  decoder_t* decoderPtr, char* bytes, long numByte)
     }
 
     packet_t* packetPtr = (packet_t*)bytes;
-
     long flowId      = packetPtr->flowId;
     long fragmentId  = packetPtr->fragmentId;
     long numFragment = packetPtr->numFragment;
@@ -350,18 +346,18 @@ TMdecoder_process (TM_ARGDECL  decoder_t* decoderPtr, char* bytes, long numByte)
 
         MAP_T* fragmentedMapPtr = decoderPtr->fragmentedMapPtr;
         list_t* fragmentListPtr =
-	            (list_t*)TMMAP_FIND(fragmentedMapPtr, (void*)flowId);
+            (list_t*)TMMAP_FIND(fragmentedMapPtr, (void*)flowId);
 
         if (fragmentListPtr == NULL) {
+
             fragmentListPtr = TMLIST_ALLOC(&decoder_comparator);
-	    assert(fragmentListPtr);
-	  
+            assert(fragmentListPtr);
             status = TMLIST_INSERT(fragmentListPtr, (void*)packetPtr);
             assert(status);
             status = TMMAP_INSERT(fragmentedMapPtr,
                                   (void*)flowId,
                                   (void*)fragmentListPtr);
-	    assert(status);
+            assert(status);
 
         } else {
 
@@ -389,22 +385,16 @@ TMdecoder_process (TM_ARGDECL  decoder_t* decoderPtr, char* bytes, long numByte)
 
                 long numByte = 0;
                 long i = 0;
-		long oldi, oldfrag; 
-		TMLIST_ITER_RESET(&it, fragmentListPtr);
+                TMLIST_ITER_RESET(&it, fragmentListPtr);
                 while (TMLIST_ITER_HASNEXT(&it, fragmentListPtr)) {
-                  
-		  packet_t* fragmentPtr =
+                    packet_t* fragmentPtr =
                         (packet_t*)TMLIST_ITER_NEXT(&it, fragmentListPtr);
                     assert(fragmentPtr->flowId == flowId);
-		    
-		    if (fragmentPtr->fragmentId != i) {
+                    if (fragmentPtr->fragmentId != i) {
                         status = TMMAP_REMOVE(fragmentedMapPtr, (void*)flowId);
                         assert(status);
-			printf("error incompl : %i - %i old %i %i\n", i, fragmentPtr->fragmentId, oldi, oldfrag);
                         return ERROR_INCOMPLETE; /* should be sequential */
                     }
-		    oldi = i;
-		    oldfrag = fragmentPtr->fragmentId;
                     numByte += fragmentPtr->length;
                     i++;
                 }
@@ -415,7 +405,6 @@ TMdecoder_process (TM_ARGDECL  decoder_t* decoderPtr, char* bytes, long numByte)
                 char* dst = data;
                 TMLIST_ITER_RESET(&it, fragmentListPtr);
                 while (TMLIST_ITER_HASNEXT(&it, fragmentListPtr)) {
-		 
                     packet_t* fragmentPtr =
                         (packet_t*)TMLIST_ITER_NEXT(&it, fragmentListPtr);
                     memcpy(dst, (void*)fragmentPtr->data, fragmentPtr->length);
@@ -538,7 +527,8 @@ main ()
 
     long numDataByte = 3;
     long numPacketByte = PACKET_HEADER_LENGTH + numDataByte;
-     char* abcBytes = (char*)SEQ_MALLOC(numPacketByte);
+
+    char* abcBytes = (char*)SEQ_MALLOC(numPacketByte);
     assert(abcBytes);
     packet_t* abcPacketPtr;
     abcPacketPtr = (packet_t*)abcBytes;
@@ -549,7 +539,8 @@ main ()
     abcPacketPtr->data[0] = 'a';
     abcPacketPtr->data[1] = 'b';
     abcPacketPtr->data[2] = 'c';
-     char* defBytes = (char*)SEQ_MALLOC(numPacketByte);
+
+    char* defBytes = (char*)SEQ_MALLOC(numPacketByte);
     assert(defBytes);
     packet_t* defPacketPtr;
     defPacketPtr = (packet_t*)defBytes;
@@ -560,7 +551,8 @@ main ()
     defPacketPtr->data[0] = 'd';
     defPacketPtr->data[1] = 'e';
     defPacketPtr->data[2] = 'f';
-     assert(decoder_process(decoderPtr, abcBytes, numDataByte) == ERROR_SHORT);
+
+    assert(decoder_process(decoderPtr, abcBytes, numDataByte) == ERROR_SHORT);
 
     abcPacketPtr->flowId = -1;
     assert(decoder_process(decoderPtr, abcBytes, numPacketByte) == ERROR_FLOWID);
@@ -573,7 +565,8 @@ main ()
     abcPacketPtr->fragmentId = 2;
     assert(decoder_process(decoderPtr, abcBytes, numPacketByte) == ERROR_FRAGMENTID);
     abcPacketPtr->fragmentId = 0;
-     abcPacketPtr->fragmentId = 2;
+
+    abcPacketPtr->fragmentId = 2;
     assert(decoder_process(decoderPtr, abcBytes, numPacketByte) == ERROR_FRAGMENTID);
     abcPacketPtr->fragmentId = 0;
 
@@ -585,7 +578,8 @@ main ()
     defPacketPtr->numFragment = 3;
     assert(decoder_process(decoderPtr, defBytes, numPacketByte) == ERROR_NUMFRAGMENT);
     defPacketPtr->numFragment = 2;
-     assert(decoder_process(decoderPtr, abcBytes, numPacketByte) == ERROR_NONE);
+
+    assert(decoder_process(decoderPtr, abcBytes, numPacketByte) == ERROR_NONE);
     defPacketPtr->fragmentId = 0;
     assert(decoder_process(decoderPtr, defBytes, numPacketByte) == ERROR_INCOMPLETE);
     defPacketPtr->fragmentId = 1;
@@ -597,7 +591,8 @@ main ()
     assert(strcmp(str, "abcdef") == 0);
     SEQ_FREE(str);
     assert(flowId == 1);
-     abcPacketPtr->numFragment = 1;
+
+    abcPacketPtr->numFragment = 1;
     assert(decoder_process(decoderPtr, abcBytes, numPacketByte) == ERROR_NONE);
     str = decoder_getComplete(decoderPtr, &flowId);
     assert(strcmp(str, "abc") == 0);

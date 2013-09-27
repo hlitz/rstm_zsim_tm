@@ -355,8 +355,11 @@ long
 TMelement_compare (TM_ARGDECL element_t* aElementPtr, element_t* bElementPtr)
 {
     element_t *aEP = NULL, *bEP = NULL;
-    aEP = TM_SHARED_READ_P(aElementPtr);
-    bEP = TM_SHARED_READ_P(bElementPtr);
+    //aEP = TM_SHARED_READ_P(aElementPtr);
+    //bEP = TM_SHARED_READ_P(bElementPtr);
+    aEP = aElementPtr;
+    bEP = bElementPtr;
+
     long aNumCoordinate = TM_SHARED_READ_L(aEP->numCoordinate);
     long bNumCoordinate = TM_SHARED_READ_L(bEP->numCoordinate);
     coordinate_t* aCoordinates = aEP->coordinates;
@@ -874,6 +877,7 @@ element_addNeighbor (element_t* elementPtr, element_t* neighborPtr)
 void
 TMelement_addNeighbor (TM_ARGDECL  element_t* elementPtr, element_t* neighborPtr)
 {
+  
     TMLIST_INSERT(elementPtr->neighborListPtr, (void*)neighborPtr);
 }
 
@@ -972,6 +976,33 @@ element_getNewPoint (element_t* elementPtr)
 
     return elementPtr->circumCenter;
 }
+/*
+coordinate_t
+TMelement_getNewPoint (TM_ARGDECL element_t* elementPtr)
+{
+
+    edge_t* encroachedEdgePtr =TM_SHARED_READ_P(elementPtr->encroachedEdgePtr);
+    void **edge = (void**)hcmalloc(8);
+    if (encroachedEdgePtr) {
+        long e;
+        long numEdge = TM_SHARED_READ_L(elementPtr->numEdge);
+        edge_t *edges = elementPtr->edges;
+        for (e = 0; e < numEdge; e++) {
+            *edge = &edges[e];
+	    
+            *edge = TM_SHARED_READ_P(*edge);
+	    
+            if (TMcompareEdge(TM_ARG encroachedEdgePtr, (edge_t*)*edge) == 0) {
+                return elementPtr->midpoints[e];
+            }
+        }
+        assert(0);
+    }
+
+    return elementPtr->circumCenter;
+}*/
+ /*
+ // ORIG
 coordinate_t
 TMelement_getNewPoint (TM_ARGDECL element_t* elementPtr)
 {
@@ -993,7 +1024,30 @@ TMelement_getNewPoint (TM_ARGDECL element_t* elementPtr)
 
     return elementPtr->circumCenter;
 }
+ */
+  
+coordinate_t
+TMelement_getNewPoint (TM_ARGDECL element_t* elementPtr)
+{
+    edge_t* encroachedEdgePtr =TM_SHARED_READ_P(elementPtr->encroachedEdgePtr);
+    edge_t edge;
+    if (encroachedEdgePtr) {
+        long e;
+        long numEdge = TM_SHARED_READ_L(elementPtr->numEdge);
+        //edge_t *edges = elementPtr->edges;
+        for (e = 0; e < numEdge; e++) {
+	  uint64_t* eedge= (uint64_t*)&elementPtr->edges[e];
+	  //printf("eedge %p\n",eedge);
+	  TM_SHARED_READ_P(*eedge);
+	  if (TMcompareEdge(TM_ARG encroachedEdgePtr, &elementPtr->edges[e]) == 0) {
+	    return elementPtr->midpoints[e];
+	  }
+        }
+        assert(0);
+    }
 
+    return elementPtr->circumCenter;
+}
 
 /* =============================================================================
  * element_checkAngles

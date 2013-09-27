@@ -555,9 +555,9 @@
 #  else /* !SIMULATOR */
 
 #    define P_MALLOC(size)              hcmalloc(size)
-#    define P_FREE(ptr)                 free(ptr)
+#    define P_FREE(ptr)                 hcfree(ptr)
 #    define TM_MALLOC(size)             hcmalloc(size)
-#    define TM_FREE(ptr)                free(ptr)
+#    define TM_FREE(ptr)                hcfree(ptr)
 
 #  endif /* !SIMULATOR */
 
@@ -603,12 +603,18 @@
 #else /* OTM */
 
 #  define STMREAD  stm::stm_read
+#  define STMREAD_PROMO  stm::stm_read_promo
 #  define STMWRITE stm::stm_write
 
 #  define TM_SHARED_READ_I(var)    STMREAD(&var, (stm::TxThread*)STM_SELF)
 #  define TM_SHARED_READ_L(var)    STMREAD(&var, (stm::TxThread*)STM_SELF)
 #  define TM_SHARED_READ_P(var)    STMREAD(&var, (stm::TxThread*)STM_SELF)
 #  define TM_SHARED_READ_F(var)    STMREAD(&var, (stm::TxThread*)STM_SELF)
+
+#  define TM_SHARED_READ_I_PROMO(var)    STMREAD_PROMO(&var, (stm::TxThread*)STM_SELF)
+#  define TM_SHARED_READ_L_PROMO(var)    STMREAD_PROMO(&var, (stm::TxThread*)STM_SELF)
+#  define TM_SHARED_READ_P_PROMO(var)    STMREAD_PROMO(&var, (stm::TxThread*)STM_SELF)
+#  define TM_SHARED_READ_F_PROMR(var)    STMREAD_PROMO(&var, (stm::TxThread*)STM_SELF)
 
 #  define TM_SHARED_WRITE_I(var, val)   STMWRITE(&var, val, (stm::TxThread*)STM_SELF)
 #  define TM_SHARED_WRITE_L(var, val)   STMWRITE(&var, val, (stm::TxThread*)STM_SELF)

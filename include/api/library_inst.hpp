@@ -284,6 +284,13 @@ namespace stm
       }
 
       TM_INLINE
+      static T read_promo(T* addr, TxThread* thread)
+      {
+          return (T)(uintptr_t)thread->tmread_promo(thread, (void**)addr
+                                              STM_MASK(~0x0));
+      }
+
+      TM_INLINE
       static void write(T* addr, T val, TxThread* thread)
       {
           thread->tmwrite(thread, (void**)addr, (void*)(uintptr_t)val

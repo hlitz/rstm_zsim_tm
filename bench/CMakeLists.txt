@@ -20,7 +20,6 @@ include (AddTargetDefinitions)
 # this (it's a CMake FAQ).
 set(
   benchmarks
-  mapbench
   CounterBench
   TreeBench
   ListBench

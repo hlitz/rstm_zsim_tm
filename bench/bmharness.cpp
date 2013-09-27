@@ -228,6 +228,13 @@ int main(int argc, char** argv) {
     for (uintptr_t i = 0; i < CFG.threads; i++)
         args[i] = reinterpret_cast<void*>(i);
 
+  struct timespec start, finish;
+  double elapsed;
+  
+  clock_gettime(CLOCK_MONOTONIC, &start);
+
+
+
     // actually create the threads
     for (uint32_t j = 1; j < CFG.threads; j++)
         pthread_create(&tid[j], &attr, &run_wrapper, args[j]);
@@ -244,7 +251,12 @@ int main(int argc, char** argv) {
     // hanging around
     for (uint32_t k = 1; k < CFG.threads; k++)
         pthread_join(tid[k], NULL);
-
+    clock_gettime(CLOCK_MONOTONIC, &finish);
+    
+    elapsed = (finish.tv_sec - start.tv_sec);
+    elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    std::cout << "time: " << elapsed <<  std::endl;
+    
     bool v = bench_verify();
     std::cout << "Verification: " << (v ? "Passed" : "Failed") << "\n";
 

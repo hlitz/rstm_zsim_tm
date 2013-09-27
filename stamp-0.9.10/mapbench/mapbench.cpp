@@ -51,8 +51,9 @@
 #include "tm.h"
 #include "map.h"
 #include "thread.h"
+#include <time.h>
 
-THREAD_MUTEX_T lock;
+//THREAD_MUTEX_T lock;
 using namespace std;
 inline uint64_t rdtsc()
 {
@@ -119,6 +120,9 @@ void bench_init(void* _CFG)
 /*** Run a bunch of increment transactions */
 void bench_test(void* _CFG)
 {
+
+  /* ... */
+
   TM_THREAD_ENTER();
   CFG_t* CFG = (CFG_t*)_CFG;
     long tid = thread_getId();
@@ -137,13 +141,14 @@ void bench_test(void* _CFG)
       TM_END();
     }
     else if (act < CFG->inspct) {
-      THREAD_MUTEX_LOCK(lock);        
+      //THREAD_MUTEX_LOCK(lock);        
       TM_BEGIN();
       //printf("ins act %i\n", act);
       result = TMMAP_INSERT(SET, val, val);
       TM_END();
-      THREAD_MUTEX_UNLOCK(lock);        
+      //THREAD_MUTEX_UNLOCK(lock);        
       if(result){
+	//std::cout <<"sucess inser " << val << std::endl;
 	tls_array[tid].inserts++;
       }
     }
@@ -159,11 +164,13 @@ void bench_test(void* _CFG)
 
       if(result){
 	tls_array[tid].inserts--;
+	//std::cout <<"sucess remov " << val << std::endl;
       }
     }
   }
   TM_THREAD_EXIT();
 
+    
 }
 
 /*** Ensure the final state of the benchmark satisfies all invariants */
@@ -188,7 +195,7 @@ MAIN(argc, argv)
     /*
      * Initialization
      */
-    THREAD_MUTEX_INIT(lock);
+    //THREAD_MUTEX_INIT(lock);
         
   if(argc!=6){
     printf("Usage: mapbenchSTM64 <1> <2> <3> <4> <5> where,\n<1>: Number of elements\n<2>: Lookup percentage\n<3>Insertion percentage\n<4>Iterations\n<5>Number of threads\n");
@@ -204,17 +211,23 @@ MAIN(argc, argv)
     
     long numThread = atol(argv[5]);
     tls_array = (tls_t*)malloc(sizeof(tls_t)*numThread);
+    int32_t numstart=0;
+    
     SIM_GET_NUM_CPU(numThread);
     TM_STARTUP(numThread);
     P_MEMORY_STARTUP(numThread);
     thread_startup(numThread);
     bench_init((void*)&cfg);
-    int32_t numstart=0;
     for(uint64_t i=0; i<cfg.elements; i++){
+      //     printf("elem i %i\n", i);
       if(MAP_CONTAINS(SET, i))
 	numstart++;
     }
     printf("Elements in map at start: %i \n", numstart);
+    struct timespec start, finish;
+    double elapsed;
+    
+    clock_gettime(CLOCK_MONOTONIC, &start);
   
 #ifdef OTM
 #pragma omp parallel
@@ -225,6 +238,12 @@ MAIN(argc, argv)
 #else
     thread_start(bench_test, (void*)&cfg);
 #endif
+  clock_gettime(CLOCK_MONOTONIC, &finish);
+
+  elapsed = (finish.tv_sec - start.tv_sec);
+  elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+  std::cout << "time: " << (elapsed*1000) <<  std::endl;
+
     TM_SHUTDOWN();
 
     printf("mem shotydown \n");

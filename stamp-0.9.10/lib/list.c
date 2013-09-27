@@ -785,8 +785,11 @@ void
 TMlist_clear (TM_ARGDECL list_t* listPtr)
 {
     TMfreeList(TM_ARG listPtr->head.nextPtr);
-    listPtr->head.nextPtr = NULL;
-    listPtr->size = 0;
+    TM_SHARED_WRITE_P(listPtr->head.nextPtr, (struct list_node*)NULL);
+    long int sz = 0;
+    TM_SHARED_WRITE_P(listPtr->size, sz);
+    //listPtr->head.nextPtr = NULL;
+    //listPtr->size = 0;
 }
 
 

@@ -228,7 +228,7 @@ TMmesh_insert (TM_ARGDECL
             bool_t isSuccess;
             element_t* sharerPtr = (element_t*)MAP_FIND(edgeMapPtr, edgePtr);
             assert(sharerPtr); /* cannot be shared by >2 elements */
-            TMELEMENT_ADDNEIGHBOR(elementPtr, sharerPtr);
+	    TMELEMENT_ADDNEIGHBOR(elementPtr, sharerPtr);
             TMELEMENT_ADDNEIGHBOR(sharerPtr, elementPtr);
             isSuccess = PMAP_REMOVE(edgeMapPtr, edgePtr);
             assert(isSuccess);

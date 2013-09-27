@@ -70,10 +70,13 @@ const uint32_t ACCESS = 10;
 /*** Run a bunch of increment transactions */
 void bench_test(uintptr_t, uint32_t* seed)
 {
+   TM_BEGIN(atomic){
+    for(int o=0; o<CFG.ops; o++){
+
     uint32_t act = rand_r(seed) % 100;
   
      if (act < CFG.lookpct) {
-       TM_BEGIN(atomic){
+       //TM_BEGIN(atomic){
 	 uint32_t rand = rand_r(seed) % CFG.elements;
 	 for(uint32_t e=0; e<1; e++){
 	   rand = rand_r(&rand) % CFG.elements;
@@ -88,10 +91,10 @@ void bench_test(uintptr_t, uint32_t* seed)
 	 uint32_t offset = rand_r(seed) % CFG.elements;
 	 TM_WRITE(*(array+offset+10), rand);
 	 
-       }TM_END;
+	 //}TM_END;
      }
      else{
-       TM_BEGIN(atomic){
+       //TM_BEGIN(atomic){
 	 uint32_t rand = rand_r(seed) % CFG.elements;
 	 for(uint32_t e=0; e<1; e++){
 	   rand = rand_r(&rand) % CFG.elements;
@@ -104,9 +107,10 @@ void bench_test(uintptr_t, uint32_t* seed)
 	   //std::cout << "rand " << rand << std::endl;
 	   TM_WRITE(*(array+offset), rand);
 	 }	 
-       }TM_END;
-     
+	 //}TM_END;
      }
+    }
+   }TM_END;
 }
   /*TM_BEGIN(atomic){
     bool found;

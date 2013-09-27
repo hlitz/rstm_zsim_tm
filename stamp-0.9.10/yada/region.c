@@ -209,7 +209,8 @@ TMretriangulate (TM_ARGDECL
     TMMESH_REMOVE(meshPtr, beforeElementPtr);
   }
 
-  numDelta -= PLIST_GETSIZE(beforeListPtr);
+  numDelta -= TMLIST_GETSIZE(beforeListPtr);
+  //  numDelta -= PLIST_GETSIZE(beforeListPtr);
 
   /*
    * If segment is encroached, split it in half
@@ -265,7 +266,8 @@ TMretriangulate (TM_ARGDECL
     }
   }
 
-  numDelta += PLIST_GETSIZE(borderListPtr);
+  numDelta += TMLIST_GETSIZE(borderListPtr);
+  //numDelta += PLIST_GETSIZE(borderListPtr);
 
   return numDelta;
 }
@@ -284,7 +286,6 @@ TMgrowRegion (TM_ARGDECL
               MAP_T* edgeMapPtr)
 {
   bool_t isBoundary = FALSE;
-
   if (element_getNumEdge(centerElementPtr) == 1) {
     isBoundary = TRUE;
   }
@@ -293,8 +294,10 @@ TMgrowRegion (TM_ARGDECL
   list_t* borderListPtr = regionPtr->borderListPtr;
   queue_t* expandQueuePtr = regionPtr->expandQueuePtr;
 
-  PLIST_CLEAR(beforeListPtr);
-  PLIST_CLEAR(borderListPtr);
+  TMLIST_CLEAR(beforeListPtr);
+  TMLIST_CLEAR(borderListPtr);
+  //PLIST_CLEAR(beforeListPtr);
+  //PLIST_CLEAR(borderListPtr);
   PQUEUE_CLEAR(expandQueuePtr);
 
   coordinate_t centerCoordinate = TMelement_getNewPoint(TM_ARG centerElementPtr);
@@ -302,10 +305,10 @@ TMgrowRegion (TM_ARGDECL
 
   PQUEUE_PUSH(expandQueuePtr, (void*)centerElementPtr);
   while (!PQUEUE_ISEMPTY(expandQueuePtr)) {
-
     element_t* currentElementPtr = (element_t*)PQUEUE_POP(expandQueuePtr);
 
-    PLIST_INSERT(beforeListPtr, (void*)currentElementPtr); /* no duplicates */
+    //PLIST_INSERT(beforeListPtr, (void*)currentElementPtr); /* no duplicates */
+    TMLIST_INSERT(beforeListPtr, (void*)currentElementPtr); /* no duplicates */
     list_t* neighborListPtr = TMelement_getNeighborListPtr(TM_ARG currentElementPtr);
 
     list_iter_t it;
@@ -314,7 +317,8 @@ TMgrowRegion (TM_ARGDECL
       element_t* neighborElementPtr =
         (element_t*)TMLIST_ITER_NEXT(&it, neighborListPtr);
       TMELEMENT_ISGARBAGE(neighborElementPtr); /* so we can detect conflicts */
-      if (!list_find(beforeListPtr, (void*)neighborElementPtr)) {
+      if (!TMLIST_FIND(beforeListPtr, (void*)neighborElementPtr)) {
+	//	if (!list_find(beforeListPtr, (void*)neighborElementPtr)) {
         if (element_isInCircumCircle(neighborElementPtr, centerCoordinatePtr)) {
           /* This is part of the region */
           if (!isBoundary && (element_getNumEdge(neighborElementPtr) == 1)) {
@@ -334,7 +338,8 @@ TMgrowRegion (TM_ARGDECL
           if (!borderEdgePtr) {
             TM_RESTART();
           }
-          PLIST_INSERT(borderListPtr,
+	  //          PLIST_INSERT(borderListPtr,
+	  TMLIST_INSERT(borderListPtr,
                        (void*)borderEdgePtr); /* no duplicates */
           if (!MAP_CONTAINS(edgeMapPtr, borderEdgePtr)) {
             PMAP_INSERT(edgeMapPtr, borderEdgePtr, neighborElementPtr);
@@ -358,12 +363,10 @@ long
 TMregion_refine (TM_ARGDECL
                  region_t* regionPtr, element_t* elementPtr, mesh_t* meshPtr)
 {
-
   long numDelta = 0L;
   MAP_T* edgeMapPtr = NULL;
   element_t* encroachElementPtr = NULL;
   TMELEMENT_ISGARBAGE(elementPtr); /* so we can detect conflicts */
-
   while (1) {
     edgeMapPtr = MAP_ALLOC(NULL, &element_mapCompareEdge);
     assert(edgeMapPtr);
@@ -372,8 +375,7 @@ TMregion_refine (TM_ARGDECL
                                       regionPtr,
                                       meshPtr,
                                       edgeMapPtr);
-
-    if (encroachElementPtr) {
+      if (encroachElementPtr) {
       TMELEMENT_SETISREFERENCED(encroachElementPtr, TRUE);
       numDelta += TMregion_refine(TM_ARG
                                   regionPtr,

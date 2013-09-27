@@ -44,11 +44,11 @@ class List
 
     // standard IntSet methods
     TM_CALLABLE
-    void insert(int val TM_ARG);
+    bool insert(int val TM_ARG);
 
     // remove a node if its value = val
     TM_CALLABLE
-    void remove(int val TM_ARG);
+    bool remove(int val TM_ARG);
 
     // make sure the list is in sorted order
     bool isSane() const;
@@ -71,21 +71,41 @@ class List
 
 
 // constructor just makes a sentinel for the data structure
-List::List() : sentinel(new Node()) { }
+//List::List() : sentinel(new Node()) { }
+List::List(){
+  sentinel = (Node*)hcmalloc(sizeof(Node));
+  //std::cout << "alloc " << sentinel << std::endl;
+  new (sentinel) Node();
+}
 
 // simple sanity check: make sure all elements of the list are in sorted order
 bool List::isSane(void) const
 {
-    const Node* prev(sentinel);
-    const Node* curr((prev->m_next));
+  bool correct = true;
+  const Node* prev(sentinel);
+  const Node* curr((prev->m_next));
+  int elems = 0;
+  while (curr != NULL) {
+    if ((prev->m_val) >= (curr->m_val))
+      correct = false;
+    prev = curr;
+    curr = curr->m_next;
+    elems++;
+  }
+  std::cout << "Elements in the List at End: " << elems << std::endl;
+  const Node* prev2(sentinel);
+  const Node* curr2((prev2->m_next));
 
-    while (curr != NULL) {
-        if ((prev->m_val) >= (curr->m_val))
-            return false;
-        prev = curr;
-        curr = curr->m_next;
+  if(!correct){
+    while (curr2 != NULL) {
+      std::cout << prev2->m_val<< " >= " <<curr2->m_val << std::endl;
+      prev2 = curr2;
+      curr2 = curr2->m_next;
+      
     }
-    return true;
+    return false;
+  }
+  return true;
 }
 
 // extended sanity check, does the same as the above method, but also calls v()
@@ -106,17 +126,17 @@ bool List::extendedSanityCheck(verifier v, uint32_t v_param) const
 // insert method; find the right place in the list, add val so that it is in
 // sorted order; if val is already in the list, exit without inserting
 TM_CALLABLE
-void List::insert(int val TM_ARG)
+bool List::insert(int val TM_ARG)
 {
     // traverse the list to find the insertion point
     const Node* prev(sentinel);
-    const Node* curr(TM_READ(prev->m_next));
-
+    const Node* curr(TM_READ_PROMO(prev->m_next));
+    //printf("start insert\n");
     while (curr != NULL) {
         if (TM_READ(curr->m_val) >= val)
             break;
         prev = curr;
-        curr = TM_READ(prev->m_next);
+        curr = TM_READ_PROMO(prev->m_next);
     }
 
     // now insert new_node between prev and curr
@@ -125,10 +145,15 @@ void List::insert(int val TM_ARG)
 
         // create the new node
         Node* i = (Node*)TM_ALLOC(sizeof(Node));
+	//std::cout << "alloc ins " << i << std::endl;
         i->m_val = val;
         i->m_next = const_cast<Node*>(curr);
         TM_WRITE(insert_point->m_next, i);
+	//std::cout << "now return " << std::endl;
+	return true;
     }
+    else
+      return false;
 }
 
 // search function
@@ -176,28 +201,32 @@ int List::findmin(TM_ARG_ALONE) const
 
 // remove a node if its value == val
 TM_CALLABLE
-void List::remove(int val TM_ARG)
+bool List::remove(int val TM_ARG)
 {
     // find the node whose val matches the request
     const Node* prev(sentinel);
-    const Node* curr(TM_READ(prev->m_next));
+    const Node* curr(TM_READ_PROMO(prev->m_next));
+    
     while (curr != NULL) {
         // if we find the node, disconnect it and end the search
         if (TM_READ(curr->m_val) == val) {
             Node* mod_point = const_cast<Node*>(prev);
-            TM_WRITE(mod_point->m_next, TM_READ(curr->m_next));
-
+            TM_WRITE(mod_point->m_next, TM_READ_PROMO(curr->m_next));
+	    //TM_WRITE(((Node*)curr)->m_next, (Node*)NULL); //dummy write
             // delete curr...
             TM_FREE(const_cast<Node*>(curr));
+	    return true;
             break;
         }
         else if (TM_READ(curr->m_val) > val) {
             // this means the search failed
+	  return false;
             break;
         }
         prev = curr;
-        curr = TM_READ(prev->m_next);
+        curr = TM_READ_PROMO(prev->m_next);
     }
+    return false;
 }
 
 // search function

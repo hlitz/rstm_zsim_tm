@@ -491,10 +491,22 @@ bool RBTree::inOrder(const RBNode* x, int lowerBound, int upperBound)
 }
 
 // build an empty tree
-RBTree::RBTree() : sentinel(new RBNode()) { }
+//RBTree::RBTree() : sentinel(new RBNode()) { }
+RBTree::RBTree(){
+  sentinel = (RBNode*)hcmalloc(sizeof( RBNode));
+  new (sentinel) RBNode();
+}
+
+//List::List() : sentinel(new Node()) { }
+/*List::List(){
+  sentinel = (Node*)hcmalloc(sizeof(Node));
+  //std::cout << "alloc " << sentinel << std::endl;
+  new (sentinel) Node();
+  }*/
+
 
 void RBTree::RBTreeInit(){
-  sentinel = (RBNode*)malloc(sizeof(RBNode));
+  sentinel = (RBNode*)hcmalloc(sizeof(RBNode));
   sentinel->RBNodeInit();
 }
 
