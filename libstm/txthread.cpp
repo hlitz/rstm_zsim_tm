@@ -45,8 +45,7 @@ namespace
 #endif
                                                );
       // need to null out the scope
-      std::cout << "should not get here - longjmp" <<std::endl;
-      //longjmp(*scope, 1);
+      longjmp(*scope, 1);
   }
 } // (anonymous namespace)
 

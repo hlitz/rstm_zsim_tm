@@ -45,8 +45,7 @@ const bool MVCC = false;
 
 using namespace std;
 //"mov $666, %rcx\n\t" 
-#define START_TRX asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx");
-#define END_TRX asm(" movl $1029, %ecx\n\t"  "xchg %rcx, %rcx");
+//#define START_TRX asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx");
 
 const std::string filename = "rbtree";     
 /* Obtain a backtrace and print it to stdout. */
@@ -147,7 +146,7 @@ __attribute__ ((noinline)) bool hctrxaddrset(uint64_t addr, uint64_t datap, uint
       return false;
 }
 
-__attribute__ ((noinline)) uint64_t hctrxstart(uint64_t codeline) {
+__attribute__ ((noinline)) uint64_t hctrxstart() {
   std::cout << "Calling dummy function hctrxstart, this text should not be shown, check pin instrumentation" << std::endl; 
   return 0;
 }
@@ -238,13 +237,14 @@ inline uint64_t rdtsc()
     // get a start time
     //tx->start_time = timestamp.val;
     //std::cout << "APP TM_BEGIN"<< std::endl;
-       uint64_t codeline = 0;
+
        /*    if(DEBUG_BACKTRACE){
       void *array[3];
       backtrace(array, 3);
       codeline = (uint64_t) array[2];
       }*/
-       uint64_t wait = 0;//hctrxstart(codeline);
+
+       uint64_t wait = hctrxstart();
     if(wait>1){
       //if(wait>1000) printf("begin wait\n");
       begintime = rdtsc();

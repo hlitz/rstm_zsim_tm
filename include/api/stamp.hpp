@@ -59,7 +59,6 @@ inline void tx_safe_non_tx_free(void * ptr)
 {
     hcfree(ptr);
 }
-#define START_TRX asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx");
 
 /**
  *  The begin and commit instrumentation are straightforward
