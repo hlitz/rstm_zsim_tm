@@ -130,13 +130,13 @@ bool List::insert(int val TM_ARG)
 {
     // traverse the list to find the insertion point
     const Node* prev(sentinel);
-    const Node* curr(TM_READ_PROMO(prev->m_next));
+    const Node* curr(TM_READ(prev->m_next));
     //printf("start insert\n");
     while (curr != NULL) {
         if (TM_READ(curr->m_val) >= val)
             break;
         prev = curr;
-        curr = TM_READ_PROMO(prev->m_next);
+        curr = TM_READ(prev->m_next);
     }
 
     // now insert new_node between prev and curr
@@ -205,13 +205,13 @@ bool List::remove(int val TM_ARG)
 {
     // find the node whose val matches the request
     const Node* prev(sentinel);
-    const Node* curr(TM_READ_PROMO(prev->m_next));
+    const Node* curr(TM_READ(prev->m_next));
     
     while (curr != NULL) {
         // if we find the node, disconnect it and end the search
         if (TM_READ(curr->m_val) == val) {
             Node* mod_point = const_cast<Node*>(prev);
-            TM_WRITE(mod_point->m_next, TM_READ_PROMO(curr->m_next));
+            TM_WRITE(mod_point->m_next, TM_READ(curr->m_next));
 	    //TM_WRITE(((Node*)curr)->m_next, (Node*)NULL); //dummy write
             // delete curr...
             TM_FREE(const_cast<Node*>(curr));
@@ -224,7 +224,7 @@ bool List::remove(int val TM_ARG)
             break;
         }
         prev = curr;
-        curr = TM_READ_PROMO(prev->m_next);
+        curr = TM_READ(prev->m_next);
     }
     return false;
 }

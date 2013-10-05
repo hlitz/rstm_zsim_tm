@@ -22,7 +22,7 @@ set(sources
   WBMMPolicy.cpp
   irrevocability.cpp
   algs/algs.cpp
-  algs/hicamp.cpp
+  algs/htm.cpp
   algs/biteager.cpp
   algs/biteagerredo.cpp
   algs/bitlazy.cpp

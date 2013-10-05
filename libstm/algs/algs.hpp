@@ -35,7 +35,7 @@ namespace stm
   enum ALGS {
       // first, list the supported STM algorithms... we need CGL to be 0, from
       // there everything will be in-order
-    CGL = 0, HICAMP, Ticket, TML, RingSW, OrecALA,
+    CGL = 0, HTM, Ticket, TML, RingSW, OrecALA,
       OrecELA, TMLLazy, NOrecPrio, OrecFair, CToken, CTokenTurbo, Pipeline,
       BitLazy, LLT, TLI, ByteEager, MCS, Serial, BitEager, ByteLazy,
       ByEAR, OrecEagerRedo, ByteEagerRedo, BitEagerRedo,

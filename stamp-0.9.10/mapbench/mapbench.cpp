@@ -22,6 +22,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 //#include <api/api.hpp>
 //#include "bmconfig.hpp"
@@ -91,6 +92,7 @@ typedef struct config{
   char* bmname;
   uint32_t inspct;
   int runs;
+  int trx_size;
 }CFG_t;
 
 
@@ -108,7 +110,7 @@ void bench_init(void* _CFG)
   //TM_BEGIN(); //_FAST_INITIALIZATION();
   for (uint32_t w = 0; w < ((CFG_t*)CFG)->elements; w++){
       
-      int val = rdtsc() % CFG->elements;
+      uint64_t val = rand() % CFG->elements;
       //SET->insert(val TM_PARAM);
       MAP_INSERT(SET, val, val);
     }
@@ -125,18 +127,24 @@ void bench_test(void* _CFG)
 
   TM_THREAD_ENTER();
   CFG_t* CFG = (CFG_t*)_CFG;
-    long tid = thread_getId();
+  long tid = thread_getId();
   
-  uint64_t val;
+  uint64_t val[CFG->trx_size];
   uint64_t act;
   bool result = false;
+  int ops;
   for(int i =0; i < CFG->runs; i++){
-    act = rdtsc() % 100UL;
-    val = rdtsc() % CFG->elements;
+    act = rand() % 100UL;
+    ops = 1;//rand() % CFG->trx_size;
+    for(int ii =0; ii<ops; ii++){
+      val[ii] = rand() % CFG->elements;
+    }
     if (act < CFG->lookpct) {
       TM_BEGIN();
       //printf("look act %i\n", act);
-      TMMAP_FIND(SET, val);
+      for(int ee =0; ee<ops; ee++){
+	TMMAP_FIND(SET, val[ee]);
+      }
       //            SET->lookup(val TM_PARAM);
       TM_END();
     }
@@ -144,7 +152,9 @@ void bench_test(void* _CFG)
       //THREAD_MUTEX_LOCK(lock);        
       TM_BEGIN();
       //printf("ins act %i\n", act);
-      result = TMMAP_INSERT(SET, val, val);
+      for(int ee =0; ee<ops; ee++){
+	result = TMMAP_INSERT(SET, val[ee], val[ee]);
+      }
       TM_END();
       //THREAD_MUTEX_UNLOCK(lock);        
       if(result){
@@ -157,8 +167,9 @@ void bench_test(void* _CFG)
       TM_BEGIN(/*atomic*/);
       //       printf("rem act %i\n", act);
      //std::cout << " val " << val << std::endl;
-      result = TMMAP_REMOVE(SET, val);
-      
+      for(int ee =0; ee<ops; ee++){
+	result = TMMAP_REMOVE(SET, val[ee]);
+      }      
       TM_END();
       //THREAD_MUTEX_UNLOCK(lock);        
 
@@ -196,9 +207,9 @@ MAIN(argc, argv)
      * Initialization
      */
     //THREAD_MUTEX_INIT(lock);
-        
-  if(argc!=6){
-    printf("Usage: mapbenchSTM64 <1> <2> <3> <4> <5> where,\n<1>: Number of elements\n<2>: Lookup percentage\n<3>Insertion percentage\n<4>Iterations\n<5>Number of threads\n");
+  srand(1);
+  if(argc!=7){
+    printf("Usage: mapbenchSTM64 <1> <2> <3> <4> <5> <6>where,\n<1>: Number of elements\n<2>: Lookup percentage\n<3>Insertion percentage\n<4>Iterations\n<5>Ops per Transaction<6>Number of threads\n");
     abort();
   }
     CFG_t cfg ;
@@ -208,8 +219,9 @@ MAIN(argc, argv)
     //cfg.bmname = "map";
     cfg.inspct = atol(argv[3]);
     cfg.runs = atol(argv[4]);
-    
-    long numThread = atol(argv[5]);
+    cfg.trx_size = atol(argv[5]);
+    printf("trx+soze %i\n", atol(argv[5]));
+    long numThread = atol(argv[6]);
     tls_array = (tls_t*)malloc(sizeof(tls_t)*numThread);
     int32_t numstart=0;
     

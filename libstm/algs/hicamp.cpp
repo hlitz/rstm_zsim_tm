@@ -45,7 +45,8 @@ const bool MVCC = false;
 
 using namespace std;
 //"mov $666, %rcx\n\t" 
-//#define START_TRX asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx");
+//#define START_TRX asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx")
+#define STACKTRACE asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx")
 
 const std::string filename = "rbtree";     
 /* Obtain a backtrace and print it to stdout. */
@@ -79,7 +80,7 @@ print_bt(uint64_t addr)
     
   size = backtrace (array, 100);
   strings = backtrace_symbols (array, size);
-  std::cout << " --- addr " << addr << std::endl;
+  std::cout << " ------------------ addr " << addr << std::endl;
   for(uint32_t i =0; i< size; ++i){
     std::cout << strings[i] << std::endl;
     //std::string str(strings[i]);
@@ -93,6 +94,7 @@ print_bt(uint64_t addr)
       break;
       }*/
   }
+  std::cout << " ------------------"<<std::endl;
   //tx->stack_trace.insert(std::pair <uint64_t, uint64_t>(addr, result));//std::string>(addr, std::string(strings[0])));
   free(strings);
   //printf ("Obtained %zd stack frames. strings pointer %p\n", size, strings);
@@ -168,6 +170,7 @@ __attribute__ ((noinline)) bool graph_detection(int h) {
 __attribute__ ((noinline)) void hctrxpromotedread(uint64_t addr) {
   std::cout << "Calling dummy function promoted read, this text should not be shown, check pin instrumentation" << std::endl;
 }
+
 
 /*
 __attribute__ ((noinline)) bool hicamp_rw_insert(const void *addr,  bool rw) {
@@ -403,14 +406,15 @@ inline uint64_t rdtsc()
     return (void*)data;
   }
 
-  void* //__attribute__ ((noinline))
+  void* __attribute__ ((noinline))
   HICAMP::read_ro(STM_READ_SIG(tx,addr,))
   {
+    //std::cout << "read "<< std::endl;
     uint64_t data;
     uint64_t codeline = 0;
       void *array[4];
     if(DEBUG_BACKTRACE){
-      //print_bt((uint64_t)addr);
+      print_bt((uint64_t)addr);
       backtrace(array, 4);
       if(BENCH)
 	codeline = (uint64_t) array[2];
@@ -436,7 +440,7 @@ inline uint64_t rdtsc()
     //for(uint64_t i=0; i< size; ++i){
     //    bt.strings[0] = (uint64_t)array[3];
 
-    
+    //STACKTRACE;
     bool res = hctrxaddrset((uint64_t)addr, (uint64_t)&data, codeline);
     //std::cout << "hicamp aapp : " << data << std::endl;
 
@@ -484,7 +488,7 @@ inline uint64_t rdtsc()
   /**
    *  HICAMP read (writing transaction)
    */
-  void*
+  void* //__attribute__ ((noinline))
   HICAMP::read_rw_promo(STM_READ_SIG(tx,addr,mask))
   {
     uint64_t data = 0;
@@ -499,14 +503,17 @@ inline uint64_t rdtsc()
     return (void*)data;//read_rw(tx,addr);
   }
   
-  void* //__attribute__ ((noinline))
+  void* __attribute__ ((noinline))
   HICAMP::read_rw(STM_READ_SIG(tx,addr,mask))
   {
+    //std::cout << "read rw"<< std::endl;
+
     uint64_t data;
     uint64_t codeline = 0;
      void *array[4];
     if(DEBUG_BACKTRACE){
-     backtrace(array, 4);
+      print_bt((uint64_t)addr);
+      backtrace(array, 4);
      if(BENCH)
        codeline = (uint64_t) array[2];
      else
@@ -533,6 +540,7 @@ inline uint64_t rdtsc()
       std::cout << strings[i] << std::endl;
       }*/
     //bool res = hicamp_rw_insert(addr, 0);
+    //STACKTRACE;
     bool res = hctrxaddrset((uint64_t)addr, (uint64_t)&data, codeline);
     if(!res) { 
       //tx->allocator.onTxAbort(); 
