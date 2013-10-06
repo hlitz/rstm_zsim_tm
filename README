@@ -1,3 +1,12 @@
+rstm_zsim
+Rochester STM repo with zsim htm algo
+
+create build dir
+enter build dir
+$RSTM_SRC_DIR/cmake
+make
+
+
 RSTM Release 7 Notes
 
 The latest RSTM release features the following changes:
