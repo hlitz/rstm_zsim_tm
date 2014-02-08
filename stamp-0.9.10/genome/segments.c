@@ -156,10 +156,7 @@ segments_create (segments_t* segmentsPtr, gene_t* genePtr, random_t* randomPtr)
 
     geneString = genePtr->contents;
     geneLength = genePtr->length;
-    
     startBitmapPtr = genePtr->startBitmapPtr;
-    
-    
     numStart = geneLength - segmentLength + 1;
 
     /* Pick some random segments to start */

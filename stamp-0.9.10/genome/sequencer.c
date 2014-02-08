@@ -216,10 +216,7 @@ sequencer_alloc (long geneLength, long segmentLength, segments_t* segmentsPtr)
     }
     for (i= 0; i < maxNumUniqueSegment; i++) {
         constructEntry_t* constructEntryPtr = &sequencerPtr->constructEntries[i];
-	//hcaddconstraint((unsigned long long *)&(constructEntryPtr->nextPtr), (unsigned long long*)&(constructEntryPtr->startPtr));
-        //hcaddconstraint((unsigned long long *)&(constructEntryPtr->startPtr), (unsigned long long*)&(constructEntryPtr->nextPtr));
-	
-	constructEntryPtr->isStart = TRUE;
+        constructEntryPtr->isStart = TRUE;
         constructEntryPtr->segment = NULL;
         constructEntryPtr->endHash = 0;
         constructEntryPtr->startPtr = constructEntryPtr;
@@ -277,9 +274,6 @@ sequencer_run (void* argPtr)
     long numUniqueSegment;
     long substringLength;
     long entryIndex;
-
-
-
 
     /*
      * Step 1: Remove duplicate segments
@@ -506,10 +500,11 @@ sequencer_run (void* argPtr)
 
                     /* Update segment chain construct info */
                     startConstructEntry_endPtr =
-                        (constructEntry_t*)TM_SHARED_READ_P/*_PROMO*/(startConstructEntryPtr->endPtr);
+                        (constructEntry_t*)TM_SHARED_READ_P(startConstructEntryPtr->endPtr);
                     endConstructEntry_startPtr =
-		      (constructEntry_t*)TM_SHARED_READ_P/*_PROMO*/(endConstructEntryPtr->startPtr);
-		    assert(startConstructEntry_endPtr);
+                        (constructEntry_t*)TM_SHARED_READ_P(endConstructEntryPtr->startPtr);
+
+                    assert(startConstructEntry_endPtr);
                     assert(endConstructEntry_startPtr);
                     TM_SHARED_WRITE_P(startConstructEntry_endPtr->startPtr,
                                       endConstructEntry_startPtr);

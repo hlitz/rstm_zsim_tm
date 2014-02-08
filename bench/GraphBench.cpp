@@ -39,7 +39,7 @@
  *    type.  Take care to avoid unnecessary indirection.
  */
 
-#include "List.hpp"
+#include "Graph.hpp"
 #include <time.h>
 
 
@@ -51,16 +51,16 @@
  */
 
 /*** the list we will manipulate in the experiment */
-List* SET;
+Graph* SET;
 int elems [32];
 int startelems = 0;
 
 /*** Initialize the counter */
 void bench_init()
 {
-  //    SET = new List();
-  SET = (List*)hcmalloc(sizeof(List));
-  new (SET) List();
+  //    SET = new Graph();
+  SET = (Graph*)hcmalloc(sizeof(Graph));
+  new (SET) Graph();
   for(int i=0;i<32;i++){
     elems[i] = 0;
   }
@@ -84,22 +84,26 @@ void bench_test(uintptr_t id, uint32_t* seed)
 {
   // std::cout << "id " << id << " " <<(uint64_t)(*id) << std::endl;
   //TM_BEGIN(atomic){
-    for(uint32_t o=0; o<CFG.ops; o++){
-      uint32_t val = rand_r(seed) % CFG.elements;
-      uint32_t act = rand_r(seed) % 100;
+    for(uint64_t o=0; o<CFG.ops; o++){
+      uint64_t val = rand_r(seed) % CFG.elements;
+      uint64_t act = rand_r(seed) % 100;
       bool res = false;
       if (act < CFG.lookpct) {
 	TM_BEGIN(atomic) {
+	  std::cout << "lookup" << std::endl;
 	  //	val = 2000;
 	  //SET->lookup(val TM_PARAM);
 	//val = 1999;
-	SET->lookup(val TM_PARAM);
+	  SET->lookupVertex(val TM_PARAM);
 	} TM_END;
       }
       else if (act < CFG.inspct) {
 	//bool res = false;
+	const uint64_t num_edges = 4;
+	uint64_t edges[num_edges] = {1,4,7,9};
 	TM_BEGIN(atomic) {
-	res = SET->insert(val TM_PARAM);
+	  std::cout << "inser" << std::endl;
+	  res = SET->insertVertex(val, edges, num_edges TM_PARAM);
 	} TM_END;
 	if(res){
 	  //std::cout << "insert el " << val << std::endl; 
@@ -109,7 +113,8 @@ void bench_test(uintptr_t id, uint32_t* seed)
       else {
 	//bool res =false;
 	TM_BEGIN(atomic) {
-	res = SET->remove(val TM_PARAM);
+	  std::cout << "rem "<<std::endl;
+	  res = SET->removeVertex(val TM_PARAM);
 	} TM_END;
 	if(res){//std::cout << "remove el " << val << std::endl; 
 	  elems[id]--;
@@ -140,6 +145,6 @@ return SET->isSane(); }
 /*** Deal with special names that map to different M values */
 void bench_reparse()
 {
-    if      (CFG.bmname == "")          CFG.bmname   = "List";
-    else if (CFG.bmname == "List")      CFG.elements = 256;
+    if      (CFG.bmname == "")          CFG.bmname   = "Graph";
+    else if (CFG.bmname == "Graph")      CFG.elements = 256;
 }

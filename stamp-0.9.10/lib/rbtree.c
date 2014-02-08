@@ -112,15 +112,20 @@ struct rbtree {
 #define STF(o,f,v)          ((o)->f) = (v)
 #define LDNODE(o,f)         ((node_t*)(LDF((o),f)))
 
-#define TX_LDA(a)           TM_SHARED_READ_L(*(a))
-#define TX_STA(a,v)         TM_SHARED_WRITE_L(*(a), v)
-#define TX_LDV(a)           TM_SHARED_READ_L(a)
+#define TX_LDA(a)           TM_SHARED_READ_P(*(a))
+#define TX_LDA_PROMO(a)     TM_SHARED_READ_P_PROMO(*(a))
+#define TX_STA(a,v)         TM_SHARED_WRITE_P(*(a), v)
+#define TX_LDV(a)           TM_SHARED_READ_P(a)
+#define TX_LDV_PROMO(a)     TM_SHARED_READ_P_PROMO(a)
 #define TX_STV(a,v)         TM_SHARED_WRITE_P(a, v)
 #define TX_LDF(o,f)         ((long)TM_SHARED_READ_L((o)->f))
+#define TX_LDF_PROMO(o,f)   ((long)TM_SHARED_READ_L_PROMO((o)->f))
 #define TX_LDF_P(o,f)       ((void*)TM_SHARED_READ_P((o)->f))
+#define TX_LDF_P_PROMO(o,f) ((void*)TM_SHARED_READ_P_PROMO((o)->f))
 #define TX_STF(o,f,v)       TM_SHARED_WRITE_L((o)->f, v)
 #define TX_STF_P(o,f,v)     TM_SHARED_WRITE_P((o)->f, v)
 #define TX_LDNODE(o,f)      ((node_t*)(TX_LDF_P((o),f)))
+#define TX_LDNODE_PROMO(o,f)      ((node_t*)(TX_LDF_P_PROMO((o),f)))
 
 /* =============================================================================
  * DECLARATION OF TM_CALLABLE FUNCTIONS
@@ -221,16 +226,16 @@ lookup (rbtree_t* s, void* k)
 static node_t*
 TMlookup (TM_ARGDECL  rbtree_t* s, void* k)
 {
-    node_t* p = TX_LDNODE(s, root);
+    node_t* p = TX_LDNODE(s, root); //pr
 
     long int (*compare)(TM_ARGDECL const void*, const void*) = s->compare->compare_tm;
 
     while (p != NULL) {
-        long cmp = compare(TM_ARG k, TX_LDF_P(p, k));
+        long cmp = compare(TM_ARG k, TX_LDF_P(p, k)); //pr
         if (cmp == 0) {
             return p;
         }
-        p = ((cmp < 0) ? TX_LDNODE(p, l) : TX_LDNODE(p, r));
+        p = ((cmp < 0) ? TX_LDNODE(p, l) : TX_LDNODE(p, r)); //2xpr
     }
 
     return NULL;
@@ -354,7 +359,7 @@ TMrotateRight (TM_ARGDECL  rbtree_t* s, node_t* x)
     TX_STF_P(l, p, xp);
     if (xp == NULL) {
         TX_STF_P(s, root, l);
-    } else if (TX_LDNODE(xp, r) == x) {
+    } else if (TX_LDNODE_PROMO(xp, r) == x) {
         TX_STF_P(xp, r, l);
     } else {
         TX_STF_P(xp, l, l);
@@ -384,7 +389,7 @@ parentOf (node_t* n)
 static inline node_t*
 TMparentOf (TM_ARGDECL  node_t* n)
 {
-   return (n ? TX_LDNODE(n,p) : NULL);
+   return (n ? TX_LDNODE_PROMO(n,p) : NULL);
 }
 #define TX_PARENT_OF(n)  TMparentOf(TM_ARG  n)
 
@@ -408,7 +413,7 @@ leftOf (node_t* n)
 static inline node_t*
 TMleftOf (TM_ARGDECL  node_t* n)
 {
-   return (n ? TX_LDNODE(n, l) : NULL);
+   return (n ? TX_LDNODE_PROMO(n, l) : NULL);
 }
 #define TX_LEFT_OF(n)  TMleftOf(TM_ARG  n)
 
@@ -456,7 +461,7 @@ colorOf (node_t* n)
 static inline long
 TMcolorOf (TM_ARGDECL  node_t* n)
 {
-    return (n ? (long)TX_LDF(n, c) : BLACK);
+    return (n ? (long)TX_LDF_PROMO(n, c) : BLACK);
 }
 #define TX_COLOR_OF(n)  TMcolorOf(TM_ARG  n)
 
@@ -557,9 +562,9 @@ static void
 TMfixAfterInsertion (TM_ARGDECL  rbtree_t* s, node_t* x)
 {
     TX_STF(x, c, RED);
-    while (x != NULL && x != TX_LDNODE(s, root)) {
+    while (x != NULL && x != TX_LDNODE_PROMO(s, root)) {
         node_t* xp = TX_LDNODE(x, p);
-        if (TX_LDF(xp, c) != RED) {
+        if (TX_LDF_PROMO(xp, c) != RED) {
             break;
         }
         /* TODO: cache g = ppx = TX_PARENT_OF(TX_PARENT_OF(x)) */
@@ -601,8 +606,8 @@ TMfixAfterInsertion (TM_ARGDECL  rbtree_t* s, node_t* x)
             }
         }
     }
-    node_t* ro = TX_LDNODE(s, root);
-    if (TX_LDF(ro, c) != BLACK) {
+    node_t* ro = TX_LDNODE_PROMO(s, root);
+    if (TX_LDF_PROMO(ro, c) != BLACK) {
         TX_STF(ro, c, BLACK);
     }
 }
@@ -679,7 +684,7 @@ insert (rbtree_t* s, void* k, void* v, node_t* n)
 static node_t*
 TMinsert (TM_ARGDECL  rbtree_t* s, void* k, void* v, node_t* n)
 {
-    node_t* t  = TX_LDNODE(s, root);
+    node_t* t  = TX_LDNODE_PROMO(s, root);
     if (t == NULL) {
         if (n == NULL) {
             return NULL;
@@ -698,11 +703,11 @@ TMinsert (TM_ARGDECL  rbtree_t* s, void* k, void* v, node_t* n)
     long int (*compare)(TM_ARGDECL const void*, const void*) = s->compare->compare_tm;
 
     for (;;) {
-        long cmp = compare(TM_ARG k, TX_LDF_P(t, k));
+        long cmp = compare(TM_ARG k, TX_LDF_P_PROMO(t, k));
         if (cmp == 0) {
             return t;
         } else if (cmp < 0) {
-            node_t* tl = TX_LDNODE(t, l);
+            node_t* tl = TX_LDNODE_PROMO(t, l);
             if (tl != NULL) {
                 t = tl;
             } else {
@@ -716,7 +721,7 @@ TMinsert (TM_ARGDECL  rbtree_t* s, void* k, void* v, node_t* n)
                 return NULL;
             }
         } else { /* cmp > 0 */
-            node_t* tr = TX_LDNODE(t, r);
+            node_t* tr = TX_LDNODE_PROMO(t, r);
             if (tr != NULL) {
                 t = tr;
             } else {
@@ -780,8 +785,8 @@ TMsuccessor  (TM_ARGDECL  node_t* t)
 {
     if (t == NULL) {
         return NULL;
-    } else if (TX_LDNODE(t, r) != NULL) {
-        node_t* p = TX_LDNODE(t,r);
+    } else if (TX_LDNODE_PROMO(t, r) != NULL) {
+        node_t* p = TX_LDNODE_PROMO(t,r);
         while (TX_LDNODE(p, l) != NULL) {
             p = TX_LDNODE(p, l);
         }
@@ -1016,7 +1021,7 @@ TMdelete (TM_ARGDECL  rbtree_t* s, node_t* p)
      * If strictly internal, copy successor's element to p and then make p
      * point to successor
      */
-    if (TX_LDNODE(p, l) != NULL && TX_LDNODE(p, r) != NULL) {
+    if (TX_LDNODE_PROMO(p, l) != NULL && TX_LDNODE_PROMO(p, r) != NULL) {
         node_t* s = TX_SUCCESSOR(p);
         TX_STF_P(p,k, TX_LDF_P(s, k));
         TX_STF_P(p,v, TX_LDF_P(s, v));

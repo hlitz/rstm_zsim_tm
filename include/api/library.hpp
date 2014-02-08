@@ -71,8 +71,9 @@ namespace stm
   TM_INLINE
   inline void begin(TxThread* tx, scope_t* s, uint32_t /*abort_flags*/)
   {
-      if (++tx->nesting_depth > 1)
-          return;
+    if (++tx->nesting_depth > 1){
+      return;
+    }
 
       // we must ensure that the write of the transaction's scope occurs
       // *before* the read of the begin function pointer.  On modern x86, a
@@ -94,6 +95,7 @@ namespace stm
 
       // now call the per-algorithm begin function
       TxThread::tmbegin(tx);
+
   }
 
   /**
@@ -104,10 +106,11 @@ namespace stm
   TM_INLINE
   inline void commit(TxThread* tx)
   {
-      // don't commit anything if we're nested... just exit this scope
-      if (--tx->nesting_depth)
-          return;
 
+      // don't commit anything if we're nested... just exit this scope
+    if (--tx->nesting_depth){
+      return;
+    }
       // dispatch to the appropriate end function
       tx->tmcommit(tx);
 

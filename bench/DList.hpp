@@ -144,14 +144,14 @@ TM_CALLABLE
 bool DList::insert(int val TM_ARG){
     // traverse the list to find the insertion point
     const Node* prev(head);
-    const Node* curr(TM_READ(prev->m_next));
+    const Node* curr(TM_READ_PROMO(prev->m_next));
 
     while (curr != NULL) {
         if (TM_READ(curr->m_val) >= val)
             break;
 
         prev = curr;
-        curr = TM_READ(prev->m_next);
+        curr = TM_READ_PROMO(prev->m_next);
     }
 
     // now insert new_node between prev and curr
@@ -195,7 +195,7 @@ TM_CALLABLE
 bool DList::remove(int val TM_ARG){
     // find the node whose val matches the request
     const Node* prev(head);
-    const Node* curr(TM_READ(prev->m_next));
+    const Node* curr(TM_READ_PROMO(prev->m_next));
 
     while (curr != NULL) {
         // if we find the node, disconnect it and end the search
@@ -217,7 +217,7 @@ bool DList::remove(int val TM_ARG){
         }
 
         prev = curr;
-        curr = TM_READ(prev->m_next);
+        curr = TM_READ_PROMO(prev->m_next);
     }
     return false;
 }

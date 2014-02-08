@@ -31,7 +31,7 @@ Config::Config() :
     nops_after_tx(0),
     elements(256),
     lookpct(34),
-    inspct(66),
+    inspct(80),
     sets(1),
     ops(1),
     time(0),

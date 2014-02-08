@@ -5,7 +5,7 @@
  *  Lehigh University Department of Computer Science and Engineering
  *
  * License: Modified BSD
- *          Please see the file LICENSE.RSTM for licensing information
+ *          Please see the file LICENSE.RSTM/ for licensing information
  */
 
 #include <stm/config.h>
@@ -50,6 +50,7 @@ int* matrix;
 void bench_init()
 {
     matrix = (int*)hcmalloc(CFG.elements * sizeof(int));
+    matrix[0] = 0;
 }
 
 /*** Run a bunch of random transactions */
@@ -65,14 +66,21 @@ void bench_test(uintptr_t, uint32_t* seed)
     TM_BEGIN(atomic) {
         for (uint32_t i = 0; i < CFG.ops; ++i) {
             uint32_t loc = rand_r((uint32_t*)&local_seed) % CFG.elements;
-            TM_WRITE(matrix[loc], 1 + TM_READ(matrix[loc]));
+	    TM_WRITE(matrix[loc], 1 + TM_READ(matrix[loc]));
+			//matrix[loc]++;
         }
     } TM_END;
     *seed = local_seed;
 }
 
 /*** Ensure the final state of the benchmark satisfies all invariants */
-bool bench_verify() { return true; }
+bool bench_verify() { 
+  int sum =0;
+  for(int i =0; i< CFG.elements; i++){
+    sum += matrix[i];
+  }
+  std::cout << "sum : " << sum << std::endl;
+  return sum == (CFG.execute*CFG.ops*CFG.threads);}//true; }
 
 /**
  *  Step 4:

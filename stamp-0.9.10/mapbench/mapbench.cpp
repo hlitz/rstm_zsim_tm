@@ -117,6 +117,9 @@ void bench_init(void* _CFG)
     //TM_END();//_FAST_INITIALIZATION();
 }
 
+uint64_t lsum[32] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+uint64_t rsum [32]= {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+uint64_t isum[32] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 /*** Run a bunch of increment transactions */
@@ -128,11 +131,12 @@ void bench_test(void* _CFG)
   TM_THREAD_ENTER();
   CFG_t* CFG = (CFG_t*)_CFG;
   long tid = thread_getId();
-  
+
   uint64_t val[CFG->trx_size];
   uint64_t act;
   bool result = false;
   int ops;
+  thread_barrier_wait();
   for(int i =0; i < CFG->runs; i++){
     act = rand() % 100UL;
     ops = 1;//rand() % CFG->trx_size;
@@ -140,6 +144,7 @@ void bench_test(void* _CFG)
       val[ii] = rand() % CFG->elements;
     }
     if (act < CFG->lookpct) {
+      uint64_t lbegin = rdtsc();
       TM_BEGIN();
       //printf("look act %i\n", act);
       for(int ee =0; ee<ops; ee++){
@@ -147,15 +152,19 @@ void bench_test(void* _CFG)
       }
       //            SET->lookup(val TM_PARAM);
       TM_END();
+      lsum[tid] += (rdtsc()-lbegin);
     }
     else if (act < CFG->inspct) {
       //THREAD_MUTEX_LOCK(lock);        
+      uint64_t ibegin = rdtsc();
       TM_BEGIN();
       //printf("ins act %i\n", act);
       for(int ee =0; ee<ops; ee++){
 	result = TMMAP_INSERT(SET, val[ee], val[ee]);
       }
       TM_END();
+      isum[tid] += (rdtsc()-ibegin);
+
       //THREAD_MUTEX_UNLOCK(lock);        
       if(result){
 	//std::cout <<"sucess inser " << val << std::endl;
@@ -163,6 +172,7 @@ void bench_test(void* _CFG)
       }
     }
     else {
+      uint64_t rbegin =rdtsc();
       //THREAD_MUTEX_LOCK(lock);        
       TM_BEGIN(/*atomic*/);
       //       printf("rem act %i\n", act);
@@ -171,6 +181,7 @@ void bench_test(void* _CFG)
 	result = TMMAP_REMOVE(SET, val[ee]);
       }      
       TM_END();
+      rsum[tid] += (rdtsc()-rbegin);
       //THREAD_MUTEX_UNLOCK(lock);        
 
       if(result){
@@ -179,6 +190,7 @@ void bench_test(void* _CFG)
       }
     }
   }
+  thread_barrier_wait();
   TM_THREAD_EXIT();
 
     
@@ -220,7 +232,7 @@ MAIN(argc, argv)
     cfg.inspct = atol(argv[3]);
     cfg.runs = atol(argv[4]);
     cfg.trx_size = atol(argv[5]);
-    printf("trx+soze %i\n", atol(argv[5]));
+    //printf("trx+soze %i\n", atol(argv[5]));
     long numThread = atol(argv[6]);
     tls_array = (tls_t*)malloc(sizeof(tls_t)*numThread);
     int32_t numstart=0;
@@ -273,6 +285,10 @@ MAIN(argc, argv)
       if(MAP_CONTAINS(SET, i))
 	numelem++;
     }
+    for(int t=0; t<8; t++){
+      std::cout << "Thread "<<t<< " lookup time: " << lsum[t] << " insert " << isum[t] << " remove " << rsum[t] << std::endl;
+    }
+  
     //printf("Elements in map at end: %i \n", numelem);
     cout << "Elements in map at end: " << numelem << endl;
     //printf("Thread added num + start elems: %i \n", numthread+numstart);

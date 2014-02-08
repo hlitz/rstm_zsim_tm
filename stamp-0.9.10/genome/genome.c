@@ -256,7 +256,7 @@ MAIN (argc,argv)
             printf("sequence = %s\n", sequence);
         }
         fflush(stdout);
-        //assert(strlen(sequence) >= strlen(gene));
+        assert(strlen(sequence) >= strlen(gene));
     }
 
     /* Clean up */

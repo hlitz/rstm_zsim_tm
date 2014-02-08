@@ -39,7 +39,7 @@
  *    type.  Take care to avoid unnecessary indirection.
  */
 
-#include "List.hpp"
+#include "GraphMatrix.hpp"
 #include <time.h>
 
 
@@ -51,16 +51,16 @@
  */
 
 /*** the list we will manipulate in the experiment */
-List* SET;
+GraphMatrix* SET;
 int elems [32];
 int startelems = 0;
 
 /*** Initialize the counter */
 void bench_init()
 {
-  //    SET = new List();
-  SET = (List*)hcmalloc(sizeof(List));
-  new (SET) List();
+  //    SET = new GraphMatrix();
+  SET = (GraphMatrix*)hcmalloc(sizeof(GraphMatrix));
+  new (SET) GraphMatrix(CFG.elements);
   for(int i=0;i<32;i++){
     elems[i] = 0;
   }
@@ -84,40 +84,46 @@ void bench_test(uintptr_t id, uint32_t* seed)
 {
   // std::cout << "id " << id << " " <<(uint64_t)(*id) << std::endl;
   //TM_BEGIN(atomic){
-    for(uint32_t o=0; o<CFG.ops; o++){
-      uint32_t val = rand_r(seed) % CFG.elements;
-      uint32_t act = rand_r(seed) % 100;
-      bool res = false;
-      if (act < CFG.lookpct) {
-	TM_BEGIN(atomic) {
-	  //	val = 2000;
-	  //SET->lookup(val TM_PARAM);
-	//val = 1999;
-	SET->lookup(val TM_PARAM);
-	} TM_END;
-      }
-      else if (act < CFG.inspct) {
-	//bool res = false;
-	TM_BEGIN(atomic) {
-	res = SET->insert(val TM_PARAM);
-	} TM_END;
-	if(res){
-	  //std::cout << "insert el " << val << std::endl; 
-	  elems[id]++;
-	}
-      }
-      else {
-	//bool res =false;
-	TM_BEGIN(atomic) {
-	res = SET->remove(val TM_PARAM);
-	} TM_END;
-	if(res){//std::cout << "remove el " << val << std::endl; 
-	  elems[id]--;
-	}
-      }
-    }
-    //}
-//TM_END;
+  uint64_t edges[32];
+  uint64_t num_edges = rand_r(seed) % 32;
+  
+  for(uint64_t o=0; o<num_edges; o++){
+    edges[o] = rand_r(seed) % CFG.elements;
+  }
+  uint64_t val = rand_r(seed) % CFG.elements;
+  uint64_t act = rand_r(seed) % 100;
+  uint64_t res = 0;
+  if (act < CFG.lookpct) {
+    TM_BEGIN(atomic) {
+      //std::cout << "lookup" << std::endl;
+      //	val = 2000;
+      //SET->lookup(val TM_PARAM);
+      //val = 1999;
+      SET->removeLargest(TM_PARAM_ALONE);
+    } TM_END;
+  }
+  else if (act < CFG.inspct) {
+    //bool res = false;
+    TM_BEGIN(atomic) {
+      //std::cout << "inser" << std::endl;
+      res = SET->insertVertex(val, edges, num_edges TM_PARAM);
+    } TM_END;
+    //std::cout << "insert el " << res << " now " << elems[id] <<std::endl; 
+    elems[id] += res;
+	
+  }
+  else {
+    //bool res =false;
+    TM_BEGIN(atomic) {
+      //std::cout << "rem "<<std::endl;
+      res = SET->removeVertex(val TM_PARAM);
+    } TM_END;
+    //std::cout << "remove : " << res << " now " << elems[id] << std::endl; 
+    elems[id] -= res;
+      
+  }
+  //}
+  //TM_END;
 }
 
 /*** Ensure the final state of the benchmark satisfies all invariants */
@@ -140,6 +146,6 @@ return SET->isSane(); }
 /*** Deal with special names that map to different M values */
 void bench_reparse()
 {
-    if      (CFG.bmname == "")          CFG.bmname   = "List";
-    else if (CFG.bmname == "List")      CFG.elements = 256;
+    if      (CFG.bmname == "")          CFG.bmname   = "GraphMatrix";
+    else if (CFG.bmname == "GraphMatrix")      CFG.elements = 256;
 }

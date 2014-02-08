@@ -168,15 +168,23 @@ Pgrid_free (grid_t* gridPtr)
  * =============================================================================
  */
 void
-grid_copy (grid_t* dstGridPtr, grid_t* srcGridPtr)
+grid_copy (TM_ARGDECL grid_t* dstGridPtr, grid_t* srcGridPtr)
 {
     assert(srcGridPtr->width  == dstGridPtr->width);
     assert(srcGridPtr->height == dstGridPtr->height);
     assert(srcGridPtr->depth  == dstGridPtr->depth);
 
     long n = srcGridPtr->width * srcGridPtr->height * srcGridPtr->depth;
-    memcpy(dstGridPtr->points, srcGridPtr->points, (n * sizeof(long)));
-
+    //memcpy(dstGridPtr->points, srcGridPtr->points, (n * sizeof(long)));
+    for(int i =0; i< n; i++){
+      printf("do read %i %i %p \n", i, n, &srcGridPtr->points[i]);
+      /*if(srcGridPtr->points[i] != TM_SHARED_READ_L(srcGridPtr->points[i])){
+	printf("%i - %i \n", srcGridPtr->points[i], TM_SHARED_READ_L(srcGridPtr->points[i]));
+	assert(0);
+      }*/
+      dstGridPtr->points[i] = srcGridPtr->points[i];//TM_SHARED_READ_L(srcGridPtr->points[i]);
+    }
+    printf("done\n");
 #ifdef USE_EARLY_RELEASE
     long* srcPoints = srcGridPtr->points;
     long i;
@@ -316,7 +324,8 @@ TMgrid_addPath (TM_ARGDECL  grid_t* gridPtr, vector_t* pointVectorPtr)
         long* gridPointPtr = (long*)vector_at(pointVectorPtr, i);
         long value = (long)TM_SHARED_READ_L(*gridPointPtr);
         if (value != GRID_POINT_EMPTY) {
-            TM_RESTART();
+	  //printf("restart\n ");
+	  //TM_RESTART();
         }
         TM_SHARED_WRITE_L(*gridPointPtr, (long)GRID_POINT_FULL);
     }

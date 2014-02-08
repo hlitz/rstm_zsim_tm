@@ -37,6 +37,8 @@ const bool BENCH = true;
 const bool MVCC = false;
 
 //#define STACKTRACE asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx")
+#define XBEGIN asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx")
+#define XEND asm(" movl $1029, %ecx\n\t"  "xchg %rcx, %rcx")
 
 const std::string filename = "rbtree";     
 
@@ -100,7 +102,7 @@ namespace {
       static TM_FASTCALL void* read_rw_promo(STM_READ_SIG(,,));
       static TM_FASTCALL void write_ro(STM_WRITE_SIG(,,,));
       static TM_FASTCALL void write_rw(STM_WRITE_SIG(,,,));
-      static TM_FASTCALL void commit_ro(TxThread*);
+    static TM_FASTCALL void commit_ro(TxThread*);
       static TM_FASTCALL void commit_rw(TxThread*);
 
       static stm::scope_t* rollback(STM_ROLLBACK_SIG(,,));
@@ -132,14 +134,16 @@ inline uint64_t rdtsc()
     tx->txn++;
     uint64_t begintime, endtime;
     tx->allocator.onTxBegin();
-    uint64_t wait = TMstart();
+    XBEGIN;
+    /*    uint64_t wait = TMstart();
     if(wait>1){
       begintime = rdtsc();
       endtime = begintime;
       while(begintime+wait>endtime && begintime+wait>begintime){
 	endtime = rdtsc();
       }
-    } 
+      } */
+    OnFirstWrite(tx, read_rw, read_rw_promo, write_rw, commit_rw);
     return false;
   }
 
@@ -149,10 +153,15 @@ inline uint64_t rdtsc()
   void
   HTM::commit_ro(TxThread* tx)
   {
-    if(!TMrocommit()){
+    //    std::cout << "committing" << std::endl;
+    /*   if(!TMrocommit()){
+      //std::cout << "comit ro abort" << std::endl;
       tx->allocator.onTxAbort(); 
       tx->tmabort(tx);
-    }
+      }*/
+    XEND;
+    //std::cout << "comit ro" << std::endl;
+
     tx->allocator.onTxCommit();
     OnReadOnlyCommit(tx);
   }
@@ -164,13 +173,17 @@ inline uint64_t rdtsc()
   void
   HTM::commit_rw(TxThread* tx)
   {
-    bool res = TMcommit(); 
+    //    std::cout << "committing" << std::endl;
+    /*bool res = TMcommit(); 
     if(!res) { 
+      //std::cout << "comit rw abort" << std::endl;
       tx->allocator.onTxAbort(); 
       tx->tmabort(tx);
-    }
+      }*/
+    XEND;
+    //std::cout << "comit rw" << std::endl;
     tx->allocator.onTxCommit(); 
-    OnReadWriteCommit(tx, read_ro, read_ro_promo, write_ro, commit_ro);
+    OnReadWriteCommit(tx, read_rw, read_rw_promo, write_rw, commit_rw);
   }
 
   /**
@@ -355,10 +368,10 @@ namespace stm {
 
       // set the pointers
       stms[HTM].begin     = ::HTM::begin;
-      stms[HTM].commit    = ::HTM::commit_ro;
-      stms[HTM].read      = ::HTM::read_ro;      
-      stms[HTM].read_promo= ::HTM::read_ro_promo;
-      stms[HTM].write     = ::HTM::write_ro;
+      stms[HTM].commit    = ::HTM::commit_rw;//o;
+      stms[HTM].read      = ::HTM::read_rw;//o;      
+      stms[HTM].read_promo= ::HTM::read_rw_promo;//o
+      stms[HTM].write     = ::HTM::write_rw;//o;
       stms[HTM].rollback  = ::HTM::rollback;
       stms[HTM].irrevoc   = ::HTM::irrevoc;
       stms[HTM].switcher  = ::HTM::onSwitchTo;

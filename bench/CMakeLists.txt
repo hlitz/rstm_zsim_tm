@@ -33,7 +33,12 @@ set(
   MCASBench
   ReadWriteNBench
   ReadNWrite1Bench
-  VectorBench)
+  VectorBench
+  BtreeBench
+  GraphBench
+  GraphMatrixBench
+  #STLVectorBench
+)
 
 append_cxx_flags(${CMAKE_THREAD_INCLUDE})
 
@@ -41,7 +46,7 @@ append_cxx_flags(${CMAKE_THREAD_INCLUDE})
 if (bench_enable_multi_source)
   foreach (bench ${benchmarks})
     foreach (arch ${rstm_archs})
-      add_stm_executable(exec "${bench}STM" ${arch} rbtree.c bmharness.cpp ${bench}.cpp)
+      add_stm_executable(exec "${bench}STM" ${arch} btree.cpp bmharness.cpp ${bench}.cpp)
       target_link_libraries(${exec} ${CMAKE_THREAD_LIBS_INIT})
     endforeach ()
   endforeach ()
@@ -51,7 +56,7 @@ endif ()
 if (bench_enable_single_source)
   foreach (bench ${benchmarks})
     foreach (arch ${rstm_archs})
-      add_stm_executable(exec "${bench}SSB" ${arch} ${bench}.cpp)
+      add_stm_executable(exec "${bench}SSB" ${arch} btree.cpp ${bench}.cpp)
       target_link_libraries(${exec} ${CMAKE_THREAD_LIBS_INIT})
       add_target_definitions(${exec} SINGLE_SOURCE_BUILD)
     endforeach ()

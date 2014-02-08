@@ -91,6 +91,7 @@ include_directories (
   ${CMAKE_SOURCE_DIR}           # alt-license is a top-level directory
   ${CMAKE_SOURCE_DIR}/include   # standard project headers
   ${CMAKE_BINARY_DIR}/include   # configured headers
+
   )
 
 add_subdirectory(include)     # configures stm/config.h.cmake

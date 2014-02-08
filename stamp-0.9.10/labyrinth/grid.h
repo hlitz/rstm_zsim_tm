@@ -128,7 +128,7 @@ Pgrid_free (grid_t* gridPtr);
  * =============================================================================
  */
 void
-grid_copy (grid_t* dstGridPtr, grid_t* srcGridPtr);
+grid_copy (TM_ARGDECL grid_t* dstGridPtr, grid_t* srcGridPtr);
 
 
 /* =============================================================================
