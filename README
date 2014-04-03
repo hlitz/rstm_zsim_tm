@@ -1,10 +1,10 @@
-rstm_zsim
-Rochester STM repo with zsim htm algo
+rstm_zsim_tm
+Rochester STM repo with Software TM disabled to run with zsim-tm HTM
 
-create build dir
-enter build dir
-$RSTM_SRC_DIR/cmake
-make
+$ mkdir rstm_build 
+$ cd rstm_build
+$ ../rstm-read-only/cmake
+$ make
 
 
 RSTM Release 7 Notes
