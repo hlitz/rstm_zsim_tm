@@ -55,6 +55,8 @@ List* SET;
 int elems [32];
 int startelems = 0;
 
+uint64_t* inter;
+
 /*** Initialize the counter */
 void bench_init()
 {
@@ -64,7 +66,8 @@ void bench_init()
   for(int i=0;i<32;i++){
     elems[i] = 0;
   }
-
+  inter = (uint64_t*)hcmalloc(sizeof(uint64_t));
+  *inter = 0;
 // warm up the datastructure
     //
     // NB: if we switch to CGL, we can initialize without transactions
@@ -78,6 +81,7 @@ void bench_init()
   TM_END;//_FAST_INITIALIZATION();*/
     std::cout << "start elems  " << startelems << std::endl;
 }
+
 
 /*** Run a bunch of increment transactions */
 void bench_test(uintptr_t id, uint32_t* seed)

@@ -54,7 +54,7 @@
 #include <stm/config.h>
 #include <common/platform.hpp>
 #include <stm/txthread.hpp>
-
+#define ZSIM_TM
 namespace stm
 {
   /**
@@ -74,7 +74,6 @@ namespace stm
     if (++tx->nesting_depth > 1){
       return;
     }
-
       // we must ensure that the write of the transaction's scope occurs
       // *before* the read of the begin function pointer.  On modern x86, a
       // CAS is faster than using WBR or xchg to achieve the ordering.  On
@@ -95,7 +94,6 @@ namespace stm
 
       // now call the per-algorithm begin function
       TxThread::tmbegin(tx);
-
   }
 
   /**
@@ -138,14 +136,26 @@ namespace stm
    *  get a chunk of memory that will be automatically reclaimed if the caller
    *  is a transaction that ultimately aborts
    */
-  inline void* tx_alloc(size_t size) { return Self->allocator.txAlloc(size); }
+  inline void* tx_alloc(size_t size) { 
+#ifdef ZSIM_TM
+    return malloc(size);
+#else
+    return Self->allocator.txAlloc(size);
+#endif
+  }
 
   /**
    *  Free some memory.  If the caller is a transaction that ultimately aborts,
    *  the free will not happen.  If the caller is a transaction that commits,
    *  the free will happen at commit time.
    */
-  inline void tx_free(void* p) { Self->allocator.txFree(p); }
+  inline void tx_free(void* p) { 
+#ifdef ZSIM_TM
+    return free(p);
+#else
+    Self->allocator.txFree(p);
+#endif
+ }
 
   /**
    *  Master class for all objects that are used in transactions, to ensure
@@ -192,10 +202,18 @@ namespace stm
   void sys_shutdown();
 
   /***  Set up a thread's transactional context */
-  inline void thread_init() { TxThread::thread_init(); }
+  inline void thread_init() { 
+#ifndef ZSIM_TM
+    TxThread::thread_init();
+#endif
+ }
 
   /***  Shut down a thread's transactional context */
-  inline void thread_shutdown() { TxThread::thread_shutdown(); }
+  inline void thread_shutdown() { 
+#ifndef ZSIM_TM
+    TxThread::thread_shutdown();
+#endif
+ }
 
   /**
    *  Set the current STM algorithm/policy.  This should be called at the
@@ -248,14 +266,22 @@ namespace stm
 /**
  * Code should only use these calls, not the template stuff declared above
  */
+#ifdef ZSIM_TM
+#define TM_READ(var)       var
+#define TM_WRITE(var, val) var = val
+#define TM_READ_PROMO(var) var
+
+#else
 #define TM_READ(var)       stm::stm_read(&var, tx)
 #define TM_WRITE(var, val) stm::stm_write(&var, val, tx)
-
-#define TM_READ_PROMO(var)       stm::stm_read_promo(&var, tx)
-
+#define TM_READ_PROMO(var)    stm::stm_read_promo(&var, tx)
+#endif
 /**
  *  This is the way to start a transaction
  */
+#ifdef ZSIM_TM
+#define TM_BEGIN(TYPE) asm(" movl $1040, %ecx\n\t"  "xchg %rcx, %rcx");
+#else
 #define TM_BEGIN(TYPE)                                      \
     {                                                       \
     stm::TxThread* tx = (stm::TxThread*)stm::Self;          \
@@ -264,19 +290,44 @@ namespace stm
     stm::begin(tx, &_jmpbuf, abort_flags);                  \
     CFENCE;                                                 \
     {
-
+#endif
 /**
  *  This is the way to commit a transaction.  Note that these macros weakly
  *  enforce lexical scoping
  */
+#ifdef ZSIM_TM
+#define TM_END asm(" movl $1041, %ecx\n\t"  "xchg %rcx, %rcx");
+#else
+
 #define TM_END                                  \
     }                                           \
     stm::commit(tx);                            \
     }
-
+#endif
 /**
  *  Macro to get STM context.  This currently produces a pointer to a TxThread
  */
+#ifdef ZSIM_TM
+#define TM_GET_THREAD() pthread_self();
+#define TM_ARG_ALONE 
+#define TM_ARG 
+#define TM_PARAM 
+#define TM_PARAM_ALONE 
+
+#define TM_WAIVER
+#define TM_CALLABLE
+
+#define TM_SYS_INIT()        stm::sys_init()
+#define TM_THREAD_INIT       stm::thread_init
+#define TM_THREAD_SHUTDOWN() stm::thread_shutdown()
+#define TM_SYS_SHUTDOWN      stm::sys_shutdown
+#define TM_ALLOC             stm::tx_alloc
+#define TM_FREE              stm::tx_free
+#define TM_SET_POLICY(P)     
+#define TM_BECOME_IRREVOC()  
+#define TM_GET_ALGNAME()     "ZSIM_TM"     
+
+#else
 #define TM_GET_THREAD() stm::TxThread* tx = (stm::TxThread*)stm::Self
 #define TM_ARG_ALONE stm::TxThread* tx
 #define TM_ARG , TM_ARG_ALONE
@@ -295,7 +346,7 @@ namespace stm
 #define TM_SET_POLICY(P)     stm::set_policy(P)
 #define TM_BECOME_IRREVOC()  stm::becom_irrevoc()
 #define TM_GET_ALGNAME()     stm::get_algname()
-
+#endif
 /**
  * This is gross.  ITM, like any good compiler, will make nontransactional
  * versions of code so that we can cleanly do initialization from outside of
@@ -313,6 +364,10 @@ namespace stm
  * compiler for instrumentation, then END_FAST_INITIALIZATION will restore
  * the original configuration, so that the app will use the STM as expected.
  */
+#ifdef ZSIM_TM
+#  define TM_BEGIN_FAST_INITIALIZATION()
+#  define TM_END_FAST_INITIALIZATION()
+#else
 #ifdef STM_API_ITM
 #  define TM_BEGIN_FAST_INITIALIZATION()
 #  define TM_END_FAST_INITIALIZATION()
@@ -323,6 +378,7 @@ namespace stm
     TM_GET_THREAD()
 #  define TM_END_FAST_INITIALIZATION()          \
     TM_SET_POLICY(__config_string__)
+#endif
 #endif
 
 #endif // API_LIBRARY_HPP__

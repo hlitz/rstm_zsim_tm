@@ -97,7 +97,7 @@ void bench_test(uintptr_t id, uint32_t* seed)
     TM_BEGIN(atomic) {
       //std::cout << "lookup" << std::endl;
       //	val = 2000;
-      //SET->lookup(val TM_PARAM);
+      //SET->lookupVertex(val TM_PARAM);
       //val = 1999;
       SET->removeLargest(TM_PARAM_ALONE);
     } TM_END;

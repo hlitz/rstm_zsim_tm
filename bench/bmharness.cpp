@@ -59,7 +59,7 @@ namespace
                 << ", S=" << CFG.sets       << ", O=" << CFG.ops
                 << ", txns=" << CFG.txcount << ", time=" << CFG.time
                 << ", throughput="
-                << (1000000000LL * CFG.txcount) / (CFG.time)
+	//<< (1000000000LL * CFG.txcount) / (CFG.time)
                 << std::endl;
   }
 

@@ -89,7 +89,6 @@ bool Graph::lookupVertex(uint64_t vertexID, vertex** vert TM_ARG) const
   bool res = vertices->lookup(vertexID, &v TM_PARAM);
   if(res){
     assert(v);
-    std::cout << (uint64_t)v << " dfd " << std::endl;
     *vert = (vertex*)v;
   }
   else
@@ -132,21 +131,17 @@ TM_CALLABLE
 bool Graph::removeVertex(uint64_t id TM_ARG){
   vertex* v = NULL;
   bool res = lookupVertex(id, &v TM_PARAM);
-  std::cout << "1" << std::endl;
-  if(res){ //vertex exists, lets delete it
+   if(res){ //vertex exists, lets delete it
     assert(v);
     List::list_iterator iter = v->edges->getFirst(TM_PARAM_ALONE);
-    std::cout << "3" << std::endl;
     while(iter != NULL){
       vertex* remotev = (vertex*)iter->data;
       remotev->removeEdge(id TM_PARAM);
       iter = v->edges->getNext(iter TM_PARAM);
-      std::cout << "4" << std::endl;
     }
     vertices->remove(id TM_PARAM);
     //we have removed ouself from all neighbours
     //hcfree(v);
-  std::cout << "5" << std::endl;
     return true;
   }
   return false;

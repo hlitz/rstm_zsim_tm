@@ -37,8 +37,9 @@ const bool BENCH = true;
 const bool MVCC = false;
 
 //#define STACKTRACE asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx")
-#define XBEGIN asm(" movl $1028, %ecx\n\t"  "xchg %rcx, %rcx")
-#define XEND asm(" movl $1029, %ecx\n\t"  "xchg %rcx, %rcx")
+#define XBEGIN asm(" movl $1040, %ecx\n\t"  "xchg %rcx, %rcx")
+#define XEND asm(" movl $1041, %ecx\n\t"  "xchg %rcx, %rcx")
+#define XWRITE asm(" movl $1042, %ecx\n\t"  "xchg %rcx, %rcx")
 
 const std::string filename = "rbtree";     
 
@@ -131,10 +132,16 @@ inline uint64_t rdtsc()
   bool
   HTM::begin(TxThread* tx)
   {
+    //printf("start TRX %i\n", tx->id);
     tx->txn++;
     uint64_t begintime, endtime;
     tx->allocator.onTxBegin();
+    // std::cout << "Begin in SW" << std::endl;
+    __sync_synchronize();
     XBEGIN;
+    //    std::cout << "Begin in SW" << std::endl;
+   //__sync_synchronize();
+      
     /*    uint64_t wait = TMstart();
     if(wait>1){
       begintime = rdtsc();
@@ -153,13 +160,15 @@ inline uint64_t rdtsc()
   void
   HTM::commit_ro(TxThread* tx)
   {
-    //    std::cout << "committing" << std::endl;
+    //printf("committing %i \n", tx->id);// << std::endl;
     /*   if(!TMrocommit()){
       //std::cout << "comit ro abort" << std::endl;
       tx->allocator.onTxAbort(); 
       tx->tmabort(tx);
       }*/
+    __sync_synchronize();
     XEND;
+    __sync_synchronize();
     //std::cout << "comit ro" << std::endl;
 
     tx->allocator.onTxCommit();
@@ -173,14 +182,16 @@ inline uint64_t rdtsc()
   void
   HTM::commit_rw(TxThread* tx)
   {
-    //    std::cout << "committing" << std::endl;
+    //printf("committing rw %i\n", tx->id);//  << std::endl;
     /*bool res = TMcommit(); 
     if(!res) { 
       //std::cout << "comit rw abort" << std::endl;
       tx->allocator.onTxAbort(); 
       tx->tmabort(tx);
       }*/
+    __sync_synchronize();
     XEND;
+    __sync_synchronize();
     //std::cout << "comit rw" << std::endl;
     tx->allocator.onTxCommit(); 
     OnReadWriteCommit(tx, read_rw, read_rw_promo, write_rw, commit_rw);
@@ -192,19 +203,26 @@ inline uint64_t rdtsc()
    */
   void*
   HTM::read_ro_promo(STM_READ_SIG(tx,addr,))
-  {
+  {/*
+    printf("read Ro promo %i \n", tx->id);//  << std::endl;
     uint64_t data = 0;
     TMpromotedread((uint64_t)addr);
     bool res = TMaddrset((uint64_t)addr, (uint64_t)&data, 0);
     if(!res) { 
       tx->tmabort(tx);
     }
-    return (void*)data;
+    return (void*)data;*/
+    __sync_synchronize();
+    return (void*)*addr;
   }
 
   void* __attribute__ ((noinline))
   HTM::read_ro(STM_READ_SIG(tx,addr,))
   {
+
+    __sync_synchronize();
+    return (void*)*addr;
+    //printf("read RO %i \n", tx->id);//  << std::endl;
     uint64_t data;
     uint64_t codeline = 0;
     void *array[4];
@@ -239,6 +257,10 @@ inline uint64_t rdtsc()
   void* //__attribute__ ((noinline))
   HTM::read_rw_promo(STM_READ_SIG(tx,addr,mask))
   {
+
+    __sync_synchronize();
+   return (void*)*addr;
+    printf("read promo %i",  tx->id);// << std::endl;
     uint64_t data = 0;
     TMpromotedread((uint64_t)addr);
     bool res = TMaddrset((uint64_t)addr, (uint64_t)&data, 0);
@@ -252,6 +274,9 @@ inline uint64_t rdtsc()
   void* __attribute__ ((noinline))
   HTM::read_rw(STM_READ_SIG(tx,addr,mask))
   {
+    __sync_synchronize();
+    return (void*)*addr;
+    printf("read RW, %i\n", tx->id);//  << std::endl;
     uint64_t data;
     uint64_t codeline = 0;
     void *array[4];
@@ -276,6 +301,7 @@ inline uint64_t rdtsc()
       }
       tx->tmabort(tx);
     }
+    printf("END read RW, %i\n", tx->id);//  << std::endl;
     return (void*)data;
   }
 
@@ -286,8 +312,17 @@ inline uint64_t rdtsc()
   void
   HTM::write_ro(STM_WRITE_SIG(tx,addr,val,mask))
   {
-    uint64_t codeline = 0;
-    bool res = TMaddwset((uint64_t)addr, (uint64_t)val, codeline);
+    uint64_t codeline =1;
+    bool res;
+    //res = TMaddwset((uint64_t)addr, (uint64_t)val, codeline);
+    //XWRITE;
+    __sync_synchronize();
+    *addr = val;
+    __sync_synchronize();
+    return;
+    printf("write ro, %i\n", tx->id);// << std::endl;
+    codeline = 0;
+    res = TMaddwset((uint64_t)addr, (uint64_t)val, codeline);
     if(!res) { 
       tx->allocator.onTxAbort(); 
       if(MVCC){
@@ -305,8 +340,17 @@ inline uint64_t rdtsc()
   void
   HTM::write_rw(STM_WRITE_SIG(tx,addr,val,mask))
   {   
-    uint64_t codeline = 0;
-    bool res = TMaddwset((uint64_t)addr, (uint64_t)val, codeline);
+    uint64_t codeline =1;
+    //XWRITE;
+    bool res;
+    //res= TMaddwset((uint64_t)addr, (uint64_t)val, codeline);
+    __sync_synchronize();
+    *addr = val;
+    __sync_synchronize();
+    return;
+    printf("write RW, %i\n", tx->id);// <<std::endl;
+    codeline = 0;
+    res = TMaddwset((uint64_t)addr, (uint64_t)val, codeline);
     if(!res) { 
       tx->allocator.onTxAbort(); 
       if(MVCC){
@@ -315,6 +359,8 @@ inline uint64_t rdtsc()
       }
      tx->tmabort(tx);
     }
+    printf("end Write RW, %i\n", tx->id);//  << std::endl;
+
   }
 
   /**

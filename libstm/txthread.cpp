@@ -38,7 +38,8 @@ namespace
   NORETURN void
   default_abort_handler(TxThread* tx)
   {
-    //    std::cout << "bort jmpbuf --------------" << std::endl;
+    std::cout << "bort jmpbuf --------------" << std::endl;
+    assert(0);
       jmp_buf* scope = (jmp_buf*)TxThread::tmrollback(tx
 #if defined(STM_ABORT_ON_THROW)
                                                       , NULL, 0

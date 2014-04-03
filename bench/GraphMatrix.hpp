@@ -92,9 +92,11 @@ TM_CALLABLE
 bool GraphMatrix::insertEdge(uint64_t from, uint64_t to TM_ARG){//* edges, uint64_t num_edges TM_ARG)
   if(from == to)
     return false;
-  if(TM_READ(vertices[from]) && TM_READ(vertices[to]) && !TM_READ(rows[from].columns[to])){ //We only need the 3rd term such that return val is correct
+  if(TM_READ(vertices[from]) 
+     && TM_READ_PROMO(vertices[to]) 
+     && !TM_READ(rows[from].columns[to])){ //We only need the 3rd term such that return val is correct
     uint64_t set = 1;
-    assert(TM_READ(rows[from].columns[to]) == TM_READ(rows[to].columns[from]));
+    //assert(TM_READ(rows[from].columns[to]) == TM_READ(rows[to].columns[from]));
     TM_WRITE(rows[from].columns[to], set);
     TM_WRITE(rows[to].columns[from], set);
     return true;
@@ -108,7 +110,7 @@ bool GraphMatrix::removeEdge(uint64_t from, uint64_t to TM_ARG){//* edges, uint6
     return false;
   if(TM_READ(rows[from].columns[to])){//vertices[from]) && TM_READ(vertices[to])){
     uint64_t unset = 0;
-    assert(TM_READ(rows[from].columns[to]) == TM_READ(rows[to].columns[from]));
+    //assert(TM_READ(rows[from].columns[to]) == TM_READ(rows[to].columns[from]));
     TM_WRITE(rows[from].columns[to], unset);
     TM_WRITE(rows[to].columns[from], unset);
     return true;
@@ -118,7 +120,7 @@ bool GraphMatrix::removeEdge(uint64_t from, uint64_t to TM_ARG){//* edges, uint6
 
 TM_CALLABLE
 bool GraphMatrix::lookupEdge(uint64_t from, uint64_t to TM_ARG){//* edges, uint64_t num_edges TM_ARG)
-  return (TM_READ(vertices[from]) && TM_READ(vertices[to])); 
+  return (TM_READ(vertices[from]) && TM_READ_PROMO(vertices[to])); 
 }
 
 TM_CALLABLE
@@ -155,7 +157,7 @@ uint64_t GraphMatrix::removeVertex(uint64_t id TM_ARG)
 TM_CALLABLE
 bool GraphMatrix::lookupVertex(uint64_t id TM_ARG)
 {
-  return TM_READ(vertices[id]);
+  return TM_READ_PROMO(vertices[id]);
 }
 
 TM_CALLABLE
@@ -194,7 +196,7 @@ bool GraphMatrix::removeLargest( TM_ARG_ALONE){
       largest = results[i];
     }
   }
-  //  removeVertex(largest TM_PARAM);
+  removeVertex(largest TM_PARAM);
   //      std::cout << "rank : " << largest << std::endl;
   return true;
 }

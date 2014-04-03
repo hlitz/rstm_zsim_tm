@@ -90,7 +90,7 @@ void bench_test(uintptr_t id, uint32_t* seed)
       bool res = false;
       if (act < CFG.lookpct) {
 	TM_BEGIN(atomic) {
-	  std::cout << "lookup" << std::endl;
+	  //std::cout << "lookup" << std::endl;
 	  //	val = 2000;
 	  //SET->lookup(val TM_PARAM);
 	//val = 1999;
@@ -102,7 +102,7 @@ void bench_test(uintptr_t id, uint32_t* seed)
 	const uint64_t num_edges = 4;
 	uint64_t edges[num_edges] = {1,4,7,9};
 	TM_BEGIN(atomic) {
-	  std::cout << "inser" << std::endl;
+	  //std::cout << "inser" << std::endl;
 	  res = SET->insertVertex(val, edges, num_edges TM_PARAM);
 	} TM_END;
 	if(res){
@@ -113,7 +113,7 @@ void bench_test(uintptr_t id, uint32_t* seed)
       else {
 	//bool res =false;
 	TM_BEGIN(atomic) {
-	  std::cout << "rem "<<std::endl;
+	  //std::cout << "rem "<<std::endl;
 	  res = SET->removeVertex(val TM_PARAM);
 	} TM_END;
 	if(res){//std::cout << "remove el " << val << std::endl; 

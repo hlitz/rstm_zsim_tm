@@ -135,8 +135,9 @@ namespace stm
       {
 
           void* ptr = hcmalloc(size);
-          if ((*my_ts)&1)
+          /*if ((*my_ts)&1)
 	    allocs.push_back((uint64_t)ptr);//insert(ptr);
+	  */
 	  //AddressList::iterator i, e;
 	  //for (i = allocs.begin(), e = allocs.end(); i != e; ++i)
 	  //if(tid==1)  std::cout << "txalloc: " << *(allocs.end()) << " " << "begin memaddr: " <<&(*(allocs.begin())) << " tid: " << tid << " size: " << allocs.size() << std::endl;
@@ -149,7 +150,7 @@ namespace stm
       {
 	if ((*my_ts)&1){
 	  //std::cout << "shed for reclaim " << ptr << std::endl;
-	    frees.push_back((uint64_t)ptr);//insert(ptr);
+	  //frees.push_back((uint64_t)ptr);//insert(ptr);
 	}
 	else{
 	    //std::cout << "WB txFree adr " << ptr<< std::endl;
