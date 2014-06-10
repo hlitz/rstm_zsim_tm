@@ -69,6 +69,7 @@
  *
  * =============================================================================
  */
+#define ZSIM_TM
 
 //#include "instrument_roi.h"
 #include "stm/lib_hicamp.h"
@@ -459,6 +460,13 @@
 
 #    define TM_EARLY_RELEASE(var)       /* nothing */
 
+//# elif defined(ZSIM_TM)
+//#define TM_BEGIN(TYPE) asm(" movl $1040, %ecx\n\t"  "xchg %rcx, %rcx")
+//#define TM_BEGIN_RO(TYPE) asm(" movl $1040, %ecx\n\t"  "xchg %rcx, %rcx")
+//#define TM_END() asm(" movl $1041, %ecx\n\t"  "xchg %rcx, %rcx")
+//#define TM_RESTART() asm(" movl $1042, %ecx\n\t"  "xchg %rcx, %rcx")
+
+
 #  else /* !OTM */
 #    undef TM_BEGIN
 #    undef TM_END
@@ -581,9 +589,32 @@
  * 3) _F suffix: for accessing variables of type "float"
  * =============================================================================
  */
+
 #if defined(STM)
 
-#if defined(OTM)
+#if defined ZSIM_TM
+#  define TM_SHARED_READ_I_PROMO(var)    (var)
+#  define TM_SHARED_READ_L_PROMO(var)    (var)
+#  define TM_SHARED_READ_P_PROMO(var)    (var)
+#  define TM_SHARED_READ_F_PROMR(var)    (var)
+
+#  define TM_SHARED_READ_I(var)         (var)
+#  define TM_SHARED_READ_L(var)         (var)
+#  define TM_SHARED_READ_P(var)         (var)
+#  define TM_SHARED_READ_F(var)         (var)
+
+#  define TM_SHARED_WRITE_I(var, val)   ({var = val; var;})
+#  define TM_SHARED_WRITE_L(var, val)   ({var = val; var;})
+#  define TM_SHARED_WRITE_P(var, val)   ({var = val; var;})
+#  define TM_SHARED_WRITE_F(var, val)   ({var = val; var;})
+
+#  define TM_LOCAL_WRITE_I(var, val)    ({var = val; var;})
+#  define TM_LOCAL_WRITE_L(var, val)    ({var = val; var;})
+#  define TM_LOCAL_WRITE_P(var, val)    ({var = val; var;})
+#  define TM_LOCAL_WRITE_F(var, val)    ({var = val; var;})
+
+
+#elif defined(OTM)
 
 #  define TM_SHARED_READ_I(var)         (var)
 #  define TM_SHARED_READ_L(var)         (var)
@@ -630,6 +661,11 @@
 #endif /* !OTM */
 
 #else /* !STM */
+
+#  define TM_SHARED_READ_I_PROMO(var)    (var)
+#  define TM_SHARED_READ_L_PROMO(var)    (var)
+#  define TM_SHARED_READ_P_PROMO(var)    (var)
+#  define TM_SHARED_READ_F_PROMR(var)    (var)
 
 #  define TM_SHARED_READ_I(var)         (var)
 #  define TM_SHARED_READ_L(var)         (var)

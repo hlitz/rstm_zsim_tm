@@ -177,13 +177,13 @@ bool List::insert(uint64_t val, void* data TM_ARG)
   assert(data);
     // traverse the list to find the insertion point
     const Node* prev(sentinel);
-    const Node* curr(TM_READ_PROMO(prev->m_next));
+    const Node* curr(TM_READ(prev->m_next)); //promo
     //printf("start insert\n");
     while (curr != NULL) {
         if (TM_READ(curr->m_val) >= val)
             break;
         prev = curr;
-        curr = TM_READ_PROMO(prev->m_next);
+        curr = TM_READ(prev->m_next); //promo
     }
 
     // now insert new_node between prev and curr
@@ -204,11 +204,11 @@ bool List::insert(uint64_t val, void* data TM_ARG)
       return false;
 }
 
-
+ 
 TM_CALLABLE
 List::list_iterator List::getFirst(TM_ARG_ALONE){
   const Node* sen(sentinel);
-  const Node* next(TM_READ_PROMO(sen->m_next));
+  const Node* next(TM_READ(sen->m_next)); //promo
    //list_iterator iter;
   return (list_iterator)next;
   //return iter;
@@ -218,7 +218,7 @@ TM_CALLABLE
 List::list_iterator List::getNext(list_iterator iter TM_ARG){
   //list_iterator iter;
   const Node* curr((Node*)iter);
-  const Node* next(TM_READ_PROMO(curr->m_next));
+  const Node* next(TM_READ(curr->m_next)); //promo
  
   return (list_iterator)next;
   //return iter;
@@ -247,7 +247,7 @@ bool List::lookup(uint64_t val, void** ptr TM_ARG) const
 {
     bool found = false;
     const Node* curr(sentinel);
-    curr = TM_READ_PROMO(curr->m_next);
+    curr = TM_READ(curr->m_next); //promo
 
     while (curr != NULL) {
         if (TM_READ(curr->m_val) >= val)
@@ -295,14 +295,14 @@ bool List::remove(uint64_t val TM_ARG)
 {
     // find the node whose val matches the request
     const Node* prev(sentinel);
-    const Node* curr(TM_READ_PROMO(prev->m_next));
+    const Node* curr(TM_READ(prev->m_next)); //promo
     
     while (curr != NULL) {
         // if we find the node, disconnect it and end the search
         if (TM_READ(curr->m_val) == val) {
             Node* mod_point = const_cast<Node*>(prev);
-            TM_WRITE(mod_point->m_next, TM_READ_PROMO(curr->m_next));
-	    TM_WRITE(((Node*)curr)->m_next, (Node*)NULL); //dummy write
+            TM_WRITE(mod_point->m_next, TM_READ(curr->m_next)); //promo
+	    //TM_WRITE(((Node*)curr)->m_next, (Node*)NULL); //dummy write
             // delete curr...
             TM_FREE(const_cast<Node*>(curr));
 	    return true;
@@ -314,7 +314,7 @@ bool List::remove(uint64_t val TM_ARG)
             break;
         }
         prev = curr;
-        curr = TM_READ_PROMO(prev->m_next);
+        curr = TM_READ(prev->m_next); //promo
     }
     return false;
 }

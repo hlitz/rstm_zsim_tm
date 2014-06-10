@@ -191,6 +191,7 @@ MAIN(argc, argv)
 
     line = (char*)SEQ_MALLOC(MAX_LINE_LENGTH); /* reserve memory line */
 
+
     if (filename == 0) {
         usage((char*)argv[0]);
     }
@@ -277,7 +278,7 @@ MAIN(argc, argv)
 
     TM_STARTUP(nthreads);
     thread_startup(nthreads);
-    
+
     /*
      * The core of the clustering
      */

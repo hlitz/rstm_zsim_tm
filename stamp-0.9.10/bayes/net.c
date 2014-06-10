@@ -833,7 +833,6 @@ TMnet_findDescendants (TM_ARGDECL
         long childId = (long)PQUEUE_POP(workQueuePtr);
         if (childId == id) {
             queue_clear(workQueuePtr);
-	    printf("problem!\n");
             return FALSE;
         }
         net_node_t* nodePtr = (net_node_t*)vector_at(nodeVectorPtr, childId);

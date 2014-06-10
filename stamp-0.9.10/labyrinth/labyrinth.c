@@ -79,7 +79,6 @@
 #include "thread.h"
 #include "timer.h"
 #include "types.h"
-#include "../lib/instrument_roi.h"
 
 enum param_types {
     PARAM_BENDCOST = (unsigned char)'b',
@@ -218,10 +217,9 @@ MAIN(argc, argv)
     //     wallclock time, we want to be sure we read time inside the
     //     simulator, or else we report native cycles spent on the benchmark
     //     instead of simulator cycles.
-    //GOTO_SIM();
-    TIMER_T startTime, stopTime;
-    //TIMER_READ(startTime);
-    BEGIN_ROI;
+    GOTO_SIM();
+    TIMER_T startTime;
+    TIMER_READ(startTime);
 #ifdef OTM
 #pragma omp parallel
     {
@@ -230,12 +228,11 @@ MAIN(argc, argv)
 #else
     thread_start(router_solve, (void*)&routerArg);
 #endif
-    END_ROI;
-    //TIMER_T stopTime;
-    //TIMER_READ(stopTime);
+    TIMER_T stopTime;
+    TIMER_READ(stopTime);
     // NB: As above, timer reads must be done inside of the simulated region
     //     for PTLSim/ASF
-    //GOTO_REAL();
+    GOTO_REAL();
 
     long numPathRouted = 0;
     list_iter_t it;
@@ -252,7 +249,7 @@ MAIN(argc, argv)
      */
     assert(numPathRouted <= numPathToRoute);
     bool_t status = maze_checkPaths(mazePtr, pathVectorListPtr, global_doPrint);
-    //assert(status == TRUE);
+    assert(status == TRUE);
     puts("Verification passed.");
     maze_free(mazePtr);
     router_free(routerPtr);

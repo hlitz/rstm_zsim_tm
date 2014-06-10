@@ -378,7 +378,7 @@ createTaskList (void* argPtr)
     /*
      * Compute base log likelihood for each variable and total base loglikelihood
      */
-  
+
     for (v = v_start; v < v_stop; v++) {
 
         float localBaseLogLikelihood = 0.0;
@@ -407,7 +407,7 @@ createTaskList (void* argPtr)
     TM_SHARED_WRITE_F(learnerPtr->baseLogLikelihood,
                       (baseLogLikelihood + globalBaseLogLikelihood));
     TM_END();
-  
+
     /*
      * For each variable, find if the addition of any edge _to_ it is better
      */
@@ -503,20 +503,21 @@ createTaskList (void* argPtr)
         }
 
     } /* for each variable */
-      PVECTOR_FREE(queryVectorPtr);
-      PVECTOR_FREE(parentQueryVectorPtr);
+
+    PVECTOR_FREE(queryVectorPtr);
+    PVECTOR_FREE(parentQueryVectorPtr);
 
 #ifdef TEST_LEARNER
     list_iter_t it;
     list_iter_reset(&it, taskListPtr);
     while (list_iter_hasNext(&it, taskListPtr)) {
         learner_task_t* taskPtr = (learner_task_t*)list_iter_next(&it, taskListPtr);
-  
+        printf("[task] op=%i from=%li to=%li score=%lf\n",
                taskPtr->op, taskPtr->fromId, taskPtr->toId, taskPtr->score);
     }
 #endif /* TEST_LEARNER */
-      TM_THREAD_EXIT();
-  
+
+    TM_THREAD_EXIT();
 }
 
 
@@ -876,11 +877,9 @@ TMfindBestRemoveTask (TM_ARGDECL  findBestTaskArg_t* argPtr)
     net_t* netPtr = learnerPtr->netPtr;
     float* localBaseLogLikelihoods = learnerPtr->localBaseLogLikelihoods;
 
-
     TMpopulateParentQueryVector(TM_ARG
                                 netPtr, toId, queries, origParentQueryVectorPtr);
     long numParent = PVECTOR_GETSIZE(origParentQueryVectorPtr);
-
 
     /*
      * Search all possible valid operations for better local log likelihood
@@ -901,18 +900,14 @@ TMfindBestRemoveTask (TM_ARGDECL  findBestTaskArg_t* argPtr)
          * Create parent query (subset of parents since remove an edge)
          */
 
-
         PVECTOR_CLEAR(parentQueryVectorPtr);
 
         long p;
         for (p = 0; p < numParent; p++) {
             if (p != fromId) {
-	      
                 query_t* queryPtr = (query_t*)PVECTOR_AT(origParentQueryVectorPtr, p);
-	
                 status = PVECTOR_PUSHBACK(parentQueryVectorPtr,
                                           (void*)&queries[queryPtr->index]);
-	
                 assert(status);
             }
         } /* create new parent query */
@@ -921,10 +916,8 @@ TMfindBestRemoveTask (TM_ARGDECL  findBestTaskArg_t* argPtr)
          * Create query
          */
 
-
         status = PVECTOR_COPY(queryVectorPtr, parentQueryVectorPtr);
         assert(status);
-
         status = PVECTOR_PUSHBACK(queryVectorPtr, (void*)&queries[toId]);
         assert(status);
         PVECTOR_SORT(queryVectorPtr, &compareQuery);
@@ -948,7 +941,6 @@ TMfindBestRemoveTask (TM_ARGDECL  findBestTaskArg_t* argPtr)
 
     } /* for each parent */
 
-
     /*
      * Return best task; Note: if none is better, fromId will equal toId
      */
@@ -968,7 +960,6 @@ TMfindBestRemoveTask (TM_ARGDECL  findBestTaskArg_t* argPtr)
         float bestScore = penalty + logLikelihood;
         bestTask.score  = bestScore;
     }
-
 
     return bestTask;
 }
@@ -1164,7 +1155,7 @@ TMfindBestReverseTask (TM_ARGDECL  findBestTaskArg_t* argPtr)
 static void
 learnStructure (void* argPtr)
 {
-     TM_THREAD_ENTER();
+    TM_THREAD_ENTER();
 
     learner_t* learnerPtr = (learner_t*)argPtr;
     net_t* netPtr = learnerPtr->netPtr;
@@ -1188,7 +1179,8 @@ learnStructure (void* argPtr)
         queries[v].index = v;
         queries[v].value = QUERY_VALUE_WILDCARD;
     }
-      float basePenalty = (float)(-0.5 * log((double)numRecord));
+
+    float basePenalty = (float)(-0.5 * log((double)numRecord));
 
     vector_t* queryVectorPtr = PVECTOR_ALLOC(1);
     assert(queryVectorPtr);
@@ -1208,7 +1200,7 @@ learnStructure (void* argPtr)
     arg.workQueuePtr         = workQueuePtr;
     arg.aQueryVectorPtr      = aQueryVectorPtr;
     arg.bQueryVectorPtr      = bQueryVectorPtr;
-  
+
     while (1) {
 
         learner_task_t* taskPtr;
@@ -1265,9 +1257,9 @@ learnStructure (void* argPtr)
             default:
                 assert(0);
         }
-  
+
 #ifdef TEST_LEARNER
-       
+        printf("[task] op=%i from=%li to=%li score=%lf valid=%s\n",
                taskPtr->op, taskPtr->fromId, taskPtr->toId, taskPtr->score,
                (isTaskValid ? "yes" : "no"));
         fflush(stdout);
@@ -1282,7 +1274,7 @@ learnStructure (void* argPtr)
         }
 
         TM_END();
-  
+
         float deltaLogLikelihood = 0.0;
 
         if (isTaskValid) {
@@ -1447,14 +1439,9 @@ learnStructure (void* argPtr)
             bestTask = newTask;
         }
 
-
 #ifdef LEARNER_TRY_REMOVE
-
-
         TM_BEGIN();
-
         newTask = TMfindBestRemoveTask(TM_ARG  &arg);
-
         TM_END();
 
         if ((newTask.fromId != newTask.toId) &&
@@ -1476,7 +1463,6 @@ learnStructure (void* argPtr)
         }
 #endif /* LEARNER_TRY_REVERSE */
 
-
         if (bestTask.toId != -1) {
             learner_task_t* tasks = learnerPtr->tasks;
             tasks[toId] = bestTask;
@@ -1484,12 +1470,11 @@ learnStructure (void* argPtr)
             TMLIST_INSERT(taskListPtr, (void*)&tasks[toId]);
             TM_END();
 #ifdef TEST_LEARNER
-         
+            printf("[new]  op=%i from=%li to=%li score=%lf\n",
                    bestTask.op, bestTask.fromId, bestTask.toId, bestTask.score);
             fflush(stdout);
 #endif
         }
-
 
     } /* while (tasks) */
 

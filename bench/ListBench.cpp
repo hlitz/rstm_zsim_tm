@@ -86,7 +86,7 @@ void bench_init()
 /*** Run a bunch of increment transactions */
 void bench_test(uintptr_t id, uint32_t* seed)
 {
-  // std::cout << "id " << id << " " <<(uint64_t)(*id) << std::endl;
+  //  std::cout << "-----------------------------------------------------------------id " << std::endl;
   //TM_BEGIN(atomic){
     for(uint32_t o=0; o<CFG.ops; o++){
       uint32_t val = rand_r(seed) % CFG.elements;

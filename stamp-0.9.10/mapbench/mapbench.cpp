@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <signal.h>
 
 //#include <api/api.hpp>
 //#include "bmconfig.hpp"
@@ -53,6 +54,7 @@
 #include "map.h"
 #include "thread.h"
 #include <time.h>
+bool running;
 
 //THREAD_MUTEX_T lock;
 using namespace std;
@@ -71,7 +73,10 @@ inline uint64_t rdtsc()
 
 typedef struct tls{
   int64_t inserts;
-  uint64_t pad[7];
+  uint64_t lsum; 
+  uint64_t rsum; 
+  uint64_t isum; 
+  uint64_t pad[4];
 }tls_t;
 
 tls_t* tls_array;
@@ -93,6 +98,7 @@ typedef struct config{
   uint32_t inspct;
   int runs;
   int trx_size;
+  
 }CFG_t;
 
 
@@ -105,7 +111,6 @@ void bench_init(void* _CFG)
   //SET = (MAP_T*)hcmalloc(sizeof(MAP_T));
   SET = MAP_ALLOC(NULL, NULL);
   //SET->init((CFG.elements/4));
-  std::cout << "startup " << std::endl;
   // warm up the datastructure
   //TM_BEGIN(); //_FAST_INITIALIZATION();
   for (uint32_t w = 0; w < ((CFG_t*)CFG)->elements; w++){
@@ -127,7 +132,7 @@ void bench_test(void* _CFG)
 {
 
   /* ... */
-
+  printf("start benchtest\n");
   TM_THREAD_ENTER();
   CFG_t* CFG = (CFG_t*)_CFG;
   long tid = thread_getId();
@@ -137,9 +142,17 @@ void bench_test(void* _CFG)
   bool result = false;
   int ops;
   thread_barrier_wait();
+  running = true;
+  int e = 0;
   for(int i =0; i < CFG->runs; i++){
+    /*while(running){
+    if(tid==3){
+      e++;
+      if(e==CFG->runs)
+	running = false;
+	}*/
     act = rand() % 100UL;
-    ops = 1;//rand() % CFG->trx_size;
+    ops = CFG->trx_size;
     for(int ii =0; ii<ops; ii++){
       val[ii] = rand() % CFG->elements;
     }
@@ -152,7 +165,7 @@ void bench_test(void* _CFG)
       }
       //            SET->lookup(val TM_PARAM);
       TM_END();
-      lsum[tid] += (rdtsc()-lbegin);
+      tls_array[tid].lsum += (rdtsc()-lbegin);
     }
     else if (act < CFG->inspct) {
       //THREAD_MUTEX_LOCK(lock);        
@@ -163,7 +176,7 @@ void bench_test(void* _CFG)
 	result = TMMAP_INSERT(SET, val[ee], val[ee]);
       }
       TM_END();
-      isum[tid] += (rdtsc()-ibegin);
+      tls_array[tid].isum += (rdtsc()-ibegin);
 
       //THREAD_MUTEX_UNLOCK(lock);        
       if(result){
@@ -181,7 +194,7 @@ void bench_test(void* _CFG)
 	result = TMMAP_REMOVE(SET, val[ee]);
       }      
       TM_END();
-      rsum[tid] += (rdtsc()-rbegin);
+      tls_array[tid].rsum += (rdtsc()-rbegin);
       //THREAD_MUTEX_UNLOCK(lock);        
 
       if(result){
@@ -210,6 +223,11 @@ bool bench_verify() { /*return SET->isSane();*/ return true; }
 /*void bench_reparse()
 {
     if (CFG.bmname == "") CFG.bmname = "Map";
+    }*/
+
+/*** Signal handler to end a test */
+/*extern "C" void catch_SIGALRM(int) {
+    running = false;
     }*/
 
 
@@ -250,7 +268,9 @@ MAIN(argc, argv)
     printf("Elements in map at start: %i \n", numstart);
     struct timespec start, finish;
     double elapsed;
-    
+    //signal(SIGALRM, catch_SIGALRM);
+    //alarm(cfg.runs);
+
     clock_gettime(CLOCK_MONOTONIC, &start);
   
 #ifdef OTM
@@ -286,7 +306,7 @@ MAIN(argc, argv)
 	numelem++;
     }
     for(int t=0; t<8; t++){
-      std::cout << "Thread "<<t<< " lookup time: " << lsum[t] << " insert " << isum[t] << " remove " << rsum[t] << std::endl;
+      std::cout << "Thread "<<t<< " lookup time: " << tls_array[t].lsum << " insert " << tls_array[t].isum << " remove " << tls_array[t].rsum << std::endl;
     }
   
     //printf("Elements in map at end: %i \n", numelem);

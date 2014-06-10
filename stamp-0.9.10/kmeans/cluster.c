@@ -101,7 +101,6 @@
 #include "random.h"
 #include "util.h"
 #include "tm.h"
-#include "stm/lib_hicamp.h"
 
 
 /* =============================================================================
@@ -115,8 +114,7 @@ extractMoments (float *data, int num_elts, int num_moments)
     int j;
     float* moments;
 
-    moments = (float*)hccalloc(num_moments, sizeof(float));
-    
+    moments = (float*)calloc(num_moments, sizeof(float));
     assert(moments);
     for (i = 0; i < num_elts; i++) {
         moments[0] += data[i];
@@ -148,8 +146,7 @@ zscoreTransform (float** data, /* in & out: [numObjects][numAttributes] */
     int i;
     int j;
 
-    single_variable = (float*)hccalloc(numObjects, sizeof(float));
-   
+    single_variable = (float*)calloc(numObjects, sizeof(float));
     assert(single_variable);
     for (i = 0; i < numAttributes; i++) {
         for (j = 0; j < numObjects; j++) {
@@ -190,7 +187,7 @@ cluster_exec (
     int* membership = 0;
     float** tmp_cluster_centres;
     random_t* randomPtr;
-   
+
     membership = (int*)SEQ_MALLOC(numObjects * sizeof(int));
     assert(membership);
 
@@ -231,7 +228,7 @@ cluster_exec (
 
         itime++;
     } /* nclusters */
- 
+
     SEQ_FREE(membership);
     random_free(randomPtr);
 

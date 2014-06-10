@@ -99,7 +99,7 @@ allocNode (long index)
     if (nodePtr) {
         nodePtr->varyVectorPtr = vector_alloc(1);
         if (nodePtr->varyVectorPtr == NULL) {
-	  SEQ_FREE(nodePtr);
+            SEQ_FREE(nodePtr);
             return NULL;
         }
         nodePtr->index = index;
@@ -288,7 +288,6 @@ makeNode (long parentIndex,
 
     long v;
     long numVar = dataPtr->numVar;
-    
     for (v = (index + 1); v < numVar; v++) {
         adtree_vary_t* varyPtr =
             makeVary(parentIndex, v, start, numRecord, dataPtr);

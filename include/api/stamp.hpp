@@ -26,15 +26,25 @@
  *  directly to c++ functions, instead of hiding code within an 'extern C'
  *  block with C-style wrapper functions.
  */
+#define ZSIM_TM
 
 #define STM_THREAD_T             stm::TxThread
 #define STM_SELF                 tm_descriptor
-#define STM_STARTUP(numThread)   tm_main_startup()
+#define STM_STARTUP(numThread){			\
+    rtm_init();					\
+    tm_main_startup();				\
+  }							
 #define STM_SHUTDOWN()           stm::sys_shutdown()
 #define STM_NEW_THREAD()         0
 #define STM_INIT_THREAD(t, id)   tm_start(&t, thread_getId())
 #define STM_FREE_THREAD(t)
+
+#ifdef ZSIM_TM
+#include "spinlock-rtm.hpp"
+#define STM_RESTART() asm(" movl $1042, %ecx\n\t"  "xchg %rcx, %rcx")
+#else
 #define STM_RESTART()            stm::restart()
+#endif
 
 #define STM_LOCAL_WRITE_I(var, val) ({var = val; var;})
 #define STM_LOCAL_WRITE_L(var, val) ({var = val; var;})
@@ -63,6 +73,43 @@ inline void tx_safe_non_tx_free(void * ptr)
 /**
  *  The begin and commit instrumentation are straightforward
  */
+
+/**
+ *  This is the way to start a transaction
+ */
+//asm(" movl $1040, %ecx\n\t"  "xchg %rcx, %rcx"); 
+///*(1<<(static_cast<stm::TxThread*>(STM_SELF)->consec_aborts))); \*/
+/*    struct timespec ts;						\
+      ts.tv_sec =0;							\
+      ts.tv_nsec = rand()%10000;					\
+      nanosleep(&ts, NULL);						\
+printf("sleeping for %i ns\n", (int)ts.tv_nsec);			\
+*/
+
+  
+#ifdef ZSIM_TM
+//static spinlock_t glbl_lock_stamp;
+/*void tm_xbegin(){
+  rtm_spinlock_release(&glbl_lock_stamp);
+  }*/
+#define STM_BEGIN_WR() rtm_glbl_spinlock_acquire(thread_getId());					       
+  /*
+#define STM_BEGIN_WR()						\
+  {									\
+  unsigned int zsim_abort_flags;					\
+  asm volatile ("movl $1040, %%ecx;  xchg %%rcx, %%rcx;  movl %%ecx, %0;" :"=r"(zsim_abort_flags) : :"%ecx");\ 
+__sync_synchronize();							\
+  if(zsim_abort_flags<=100){						\
+      struct timespec ts;						\
+      ts.tv_sec =0;							\
+      ts.tv_nsec = 1000UL<<zsim_abort_flags;				\
+      nanosleep(&ts, NULL);						\
+    }									\
+    else{			 					\
+    }								\
+  }
+  */
+#else
 #define STM_BEGIN_WR()                                                  \
     {                                                                   \
     jmp_buf jmpbuf_;                                                    \
@@ -70,14 +117,42 @@ inline void tx_safe_non_tx_free(void * ptr)
     begin(static_cast<stm::TxThread*>(STM_SELF), &jmpbuf_, abort_flags);\
     CFENCE;                                                             \
     {
+#endif
 
+/**
+ *  This is the way to commit a transaction.  Note that these macros weakly
+ *  enforce lexical scoping
+ */
+
+//printf("stamp.hpp abort res before %lx\n", (long unsigned int)abort_res_stm_end); 
+//asm volatile ("movl $1041, %%ecx;  xchg %%rcx, %%rcx;  movl %%ecx, %0;" :"=r"(abort_res_stm_end) ::); 
+//printf("stamp.hpp abort res after %lx\n", (long unsigned int)abort_res_stm_end); 
+
+//asm volatile ("movl $1041, %ecx\n\t" " xchg %rcx, %rcx"); 
+ 
+  
+#ifdef ZSIM_TM
+/*void tm_xend(){
+  rtm_spinlock_release(&glbl_lock_stamp);
+  }*/
+#define STM_END()   rtm_glbl_spinlock_release(thread_getId());
+  /*
+#define STM_END()							\
+  {									\
+    __sync_synchronize();						\
+    rtm_spinlock_release(&glbl_lock_stamp);					\
+  }
+  */
+#else
 #define STM_END()                                   \
     }                                               \
     commit(static_cast<stm::TxThread*>(STM_SELF));  \
     }
+#endif
 
 /*** read-only begin == read/write begin */
 #define STM_BEGIN_RD() STM_BEGIN_WR()
+
 
 /**
  *  tm_main_startup()

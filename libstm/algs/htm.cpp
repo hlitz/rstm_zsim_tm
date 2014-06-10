@@ -67,6 +67,7 @@ __attribute__ ((noinline)) bool TMaddwset(uint64_t addr, uint64_t data, uint64_t
 
 __attribute__ ((noinline)) bool TMaddrset(uint64_t addr, uint64_t datap, uint64_t codeline) {
       std::cout << "Calling dummy function TMaddrset, this text should not be shown, check pin instrumentation" << addr << std::endl; 
+      assert(0);
       return false;
 }
 
@@ -132,7 +133,7 @@ inline uint64_t rdtsc()
   bool
   HTM::begin(TxThread* tx)
   {
-    //printf("start TRX %i\n", tx->id);
+    printf("start TRX %i\n", tx->id);
     tx->txn++;
     uint64_t begintime, endtime;
     tx->allocator.onTxBegin();

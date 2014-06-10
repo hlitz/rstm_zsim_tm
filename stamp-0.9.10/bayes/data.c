@@ -79,7 +79,6 @@
 #include "sort.h"
 #include "types.h"
 #include "vector.h"
-#include "stm/lib_hicamp.h"
 
 enum data_config {
     DATA_PRECISION = 100,
@@ -316,7 +315,7 @@ data_copy (data_t* dstPtr, data_t* srcPtr)
     long numSrcDatum = srcPtr->numVar * srcPtr->numRecord;
     if (numDstDatum != numSrcDatum) {
         SEQ_FREE(dstPtr->records);
-        dstPtr->records = (char*)hccalloc(numSrcDatum, sizeof(char));
+        dstPtr->records = (char*)calloc(numSrcDatum, sizeof(char));
         if (dstPtr->records == NULL) {
             return FALSE;
         }

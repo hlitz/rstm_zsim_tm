@@ -87,7 +87,6 @@
 #include "tm.h"
 #include "types.h"
 #include "utility.h"
-#include "../lib/instrument_roi.h"
 
 enum param_types {
     PARAM_CLIENTS      = (unsigned char)'c',
@@ -365,29 +364,19 @@ checkTables (manager_t* managerPtr)
                 assert(!MAP_FIND(customerTablePtr, i));
             }
         }
-
     }
 
     /* Check reservation tables for consistency and unique ids */
     for (t = 0; t < numTable; t++) {
-      
-
         MAP_T* tablePtr = tables[t];
         for (i = 1; i <= numRelation; i++) {
-	  
-
             if (MAP_FIND(tablePtr, i)) {
-	  
-
                 assert(manager_add[t](managerPtr, i, 0, 0)); /* validate entry */
                 if (MAP_REMOVE(tablePtr, i)) {
-	
-
-		  assert(!MAP_REMOVE(tablePtr, i));
+                    assert(!MAP_REMOVE(tablePtr, i));
                 }
             }
         }
-
     }
 
     puts("done.");
@@ -420,8 +409,8 @@ MAIN(argc, argv)
 {
     manager_t* managerPtr;
     client_t** clients;
-    TIMER_T startTime;
-    TIMER_T stopTime;
+    TIMER_T start;
+    TIMER_T stop;
 
     /* Initialization */
     parseArgs(argc, (char** const)argv);
@@ -440,9 +429,8 @@ MAIN(argc, argv)
     /* Run transactions */
     printf("Running clients... ");
     fflush(stdout);
-    //GOTO_SIM();
-    //TIMER_READ(start);
-    BEGIN_ROI;
+    GOTO_SIM();
+    TIMER_READ(start);
 #ifdef OTM
 #pragma omp parallel
     {
@@ -451,12 +439,11 @@ MAIN(argc, argv)
 #else
     thread_start(client_run, (void*)clients);
 #endif
-    END_ROI;
-    //TIMER_READ(stop);
-    //GOTO_REAL();
+    TIMER_READ(stop);
+    GOTO_REAL();
     puts("done.");
     printf("Time = %0.6lf\n",
-           TIMER_DIFF_SECONDS(startTime, stopTime));
+           TIMER_DIFF_SECONDS(start, stop));
     fflush(stdout);
     checkTables(managerPtr);
 

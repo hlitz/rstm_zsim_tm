@@ -9,7 +9,6 @@
 
 set(
   sources
-  ../../libstm/lib_hicamp.c
   ../lib/list.c
   ../lib/mt19937ar.c
   ../lib/pair.c

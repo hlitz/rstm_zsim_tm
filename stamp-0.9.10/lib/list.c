@@ -254,7 +254,6 @@ list_t*
 TMlist_alloc (TM_ARGDECL comparator_t* comp)
 {
     list_t* listPtr = (list_t*)TM_MALLOC(sizeof(list_t));
-    //hcaddconstraint((void*) listPtr, (void*)listPtr);
     if (listPtr == NULL) {
         return NULL;
     }
@@ -660,22 +659,19 @@ TMlist_insert (TM_ARGDECL  list_t* listPtr, void* dataPtr)
     list_node_t* prevPtr;
     list_node_t* nodePtr;
     list_node_t* currPtr;
-
+    
     prevPtr = TMfindPrevious(TM_ARG  listPtr, dataPtr);
     currPtr = (list_node_t*)TM_SHARED_READ_P(prevPtr->nextPtr);
 
 #ifdef LIST_NO_DUPLICATES
     if ((currPtr != NULL) &&
         listPtr->comparator->compare_tm(TM_ARG TM_SHARED_READ_P(currPtr->dataPtr), dataPtr) == 0) {
-        return FALSE;
+      //printf("currPtr %p dataptr %p %i\n", currPtr, currPtr->dataPtr, listPtr->comparator->compare_notm(currPtr->dataPtr, dataPtr));
+      return FALSE;
     }
 #endif
 
     nodePtr = TMallocNode(TM_ARG  dataPtr);
-    
-
-    //hcaddconstraint((long long unsigned int*)nodePtr, (long long unsigned int*)nodePtr);
-
     if (nodePtr == NULL) {
         return FALSE;
     }
@@ -785,11 +781,8 @@ void
 TMlist_clear (TM_ARGDECL list_t* listPtr)
 {
     TMfreeList(TM_ARG listPtr->head.nextPtr);
-    TM_SHARED_WRITE_P(listPtr->head.nextPtr, (struct list_node*)NULL);
-    long int sz = 0;
-    TM_SHARED_WRITE_P(listPtr->size, sz);
-    //listPtr->head.nextPtr = NULL;
-    //listPtr->size = 0;
+    listPtr->head.nextPtr = NULL;
+    listPtr->size = 0;
 }
 
 
