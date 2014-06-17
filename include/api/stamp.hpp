@@ -39,9 +39,10 @@
 #define STM_INIT_THREAD(t, id)   tm_start(&t, thread_getId())
 #define STM_FREE_THREAD(t)
 
+//asm(" movl $1042, %ecx\n\t"  "xchg %rcx, %rcx")
 #ifdef ZSIM_TM
 #include "spinlock-rtm.hpp"
-#define STM_RESTART() asm(" movl $1042, %ecx\n\t"  "xchg %rcx, %rcx")
+#define STM_RESTART() rtm_restart();
 #else
 #define STM_RESTART()            stm::restart()
 #endif

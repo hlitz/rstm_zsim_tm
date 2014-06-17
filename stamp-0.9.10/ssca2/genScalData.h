@@ -86,8 +86,6 @@ genScalData_seq (graphSDG* SDGdataPtr);
 void
 genScalData (void* argPtr);
 
-void
-genScalDataAlloc();
 
 #endif /* GETSCALDATA_H */
 

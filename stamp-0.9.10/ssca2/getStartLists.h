@@ -84,8 +84,6 @@ typedef struct getStartLists_arg {
 void
 getStartLists (void* argPtr);
 
-void
-getStartListsAlloc();
 
 #endif /* GETSTARTLISTS_H */
 

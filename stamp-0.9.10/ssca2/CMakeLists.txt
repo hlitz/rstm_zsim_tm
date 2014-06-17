@@ -9,7 +9,6 @@
 
 set(
   sources
-  ../../libstm/lib_hicamp.c
   ../lib/mt19937ar.c
   ../lib/random.c
   ../lib/thread.c

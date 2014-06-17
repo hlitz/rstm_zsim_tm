@@ -85,8 +85,8 @@ static ULONGINT_T* global_firstVsInCliques   = NULL;
 static ULONGINT_T* global_lastVsInCliques    = NULL;
 static ULONGINT_T* global_i_edgeStartCounter = NULL;
 static ULONGINT_T* global_i_edgeEndCounter   = NULL;
-/*static*/long*       global_edgeNum;//            = 0;
-/*static*/ ULONGINT_T*  global_numStrWtEdges;//      = 0;
+static long        global_edgeNum            = 0;
+static ULONGINT_T  global_numStrWtEdges      = 0;
 static ULONGINT_T* global_startVertex        = NULL;
 static ULONGINT_T* global_endVertex          = NULL;
 static ULONGINT_T* global_tempIndex          = NULL;
@@ -557,7 +557,7 @@ genScalData_seq (graphSDG* SDGdataPtr)
     /*
      * STEP 4: Generate edge weights
      */
-    //printf("step 4");
+
     SDGdataPtr->intWeight =
         (LONGINT_T*)SEQ_MALLOC(numEdgesPlaced * sizeof(LONGINT_T));
     assert(SDGdataPtr->intWeight);
@@ -575,8 +575,7 @@ genScalData_seq (graphSDG* SDGdataPtr)
             numStrWtEdges++;
         }
     }
-    //printf("step 4a");
- 
+
     long t = 0;
     for (i = 0; i < numEdgesPlaced; i++) {
         if (SDGdataPtr->intWeight[i] < 0) {
@@ -588,8 +587,7 @@ genScalData_seq (graphSDG* SDGdataPtr)
     SDGdataPtr->strWeight =
         (char*)SEQ_MALLOC(numStrWtEdges * MAX_STRLEN * sizeof(char));
     assert(SDGdataPtr->strWeight);
-    //printf("step 4b");
- 
+
     for (i = 0; i < numEdgesPlaced; i++) {
         if (SDGdataPtr->intWeight[i] <= 0) {
             long j;
@@ -599,8 +597,7 @@ genScalData_seq (graphSDG* SDGdataPtr)
             }
         }
     }
-    //printf("step 4c");
- 
+
     /*
      * Choose SOUGHT STRING randomly if not assigned
      */
@@ -616,8 +613,7 @@ genScalData_seq (graphSDG* SDGdataPtr)
         SOUGHT_STRING[j] =
             (char) ((long) SDGdataPtr->strWeight[t*MAX_STRLEN+j]);
     }
-    //printf("step 5");
- 
+
     /*
      * STEP 5: Permute Vertices
      */
@@ -634,8 +630,7 @@ genScalData_seq (graphSDG* SDGdataPtr)
     /*
      * Radix sort with StartVertex as primary key
      */
-    //printf("step 6");
- 
+
     numByte = numEdgesPlaced * sizeof(ULONGINT_T);
     SDGdataPtr->startVertex = (ULONGINT_T*)SEQ_MALLOC(numByte);
     assert(SDGdataPtr->startVertex);
@@ -757,16 +752,11 @@ genScalData_seq (graphSDG* SDGdataPtr)
        SEQ_FREE(tempIndex);
 
     } /* SCALE >= 12 */
-    //printf("step last");
- 
+
     random_free(stream);
     SEQ_FREE(permV);
 }
 
-void genScalDataAlloc(){
-  global_edgeNum = (long*)hcmalloc(sizeof(long));
-  global_numStrWtEdges = (ULONGINT_T*)hcmalloc(sizeof(ULONGINT_T));
-}
 
 /* =============================================================================
  * genScalData
@@ -776,7 +766,7 @@ void
 genScalData (void* argPtr)
 {
     TM_THREAD_ENTER();
-    //printf("thread enter\n");
+
     graphSDG* SDGdataPtr = (graphSDG*)argPtr;
 
     long myId = thread_getId();
@@ -811,7 +801,7 @@ genScalData (void* argPtr)
     for (i = i_start; i < i_stop; i++) {
         permV[i] = i;
     }
-    //printf("init array\n");
+
     thread_barrier_wait();
 
     for (i = i_start; i < i_stop; i++) {
@@ -843,7 +833,7 @@ genScalData (void* argPtr)
         assert(cliqueSizes);
         global_cliqueSizes = cliqueSizes;
     }
-    //printf("create cliques\n");
+
     thread_barrier_wait();
 
     cliqueSizes = global_cliqueSizes;
@@ -878,7 +868,7 @@ genScalData (void* argPtr)
         /*
          * Sum up vertices in each clique to determine the lastVsInCliques array
          */
-	//printf("sum vertices\n");
+
         lastVsInCliques[0] = cliqueSizes[0] - 1;
         for (i = 1; i < estTotCliques; i++) {
             lastVsInCliques[i] = cliqueSizes[i] + lastVsInCliques[i-1];
@@ -912,7 +902,7 @@ genScalData (void* argPtr)
     for (i = i_start; i < i_stop; i++) {
         firstVsInCliques[i] = lastVsInCliques[i-1] + 1;
     }
-    //printf("compute start vertices\n");
+
 #ifdef WRITE_RESULT_FILES
     thread_barrier_wait();
 
@@ -933,7 +923,7 @@ genScalData (void* argPtr)
 
     thread_barrier_wait();
 #endif
-    //printf("STEP 2\n");
+
     /*
      * STEP 2: Create the edges within the cliques
      */
@@ -991,7 +981,7 @@ genScalData (void* argPtr)
      */
      long i_clique;
      createPartition(0, totCliques, myId, numThread, &i_start, &i_stop);
-     //printf("create edges in parallel\n");
+
      for (i_clique = i_start; i_clique < i_stop; i_clique++) {
 
         /*
@@ -1107,13 +1097,13 @@ genScalData (void* argPtr)
     }
 
     TM_BEGIN();
-    TM_SHARED_WRITE_L(*global_edgeNum,
-                    ((long)TM_SHARED_READ_L(*global_edgeNum) + i_edgePtr));
+    TM_SHARED_WRITE_L(global_edgeNum,
+                    ((long)TM_SHARED_READ_L(global_edgeNum) + i_edgePtr));
     TM_END();
 
     thread_barrier_wait();
 
-    long edgeNum = *global_edgeNum;
+    long edgeNum = global_edgeNum;
 
     /*
      * Initialize edge list arrays
@@ -1312,7 +1302,7 @@ genScalData (void* argPtr)
     i_edgeStartCounter[myId] = 0;
 
     if (myId == 0) {
-        *global_edgeNum = 0;
+        global_edgeNum = 0;
     }
 
     thread_barrier_wait();
@@ -1325,15 +1315,15 @@ genScalData (void* argPtr)
     }
 
     TM_BEGIN();
-    TM_SHARED_WRITE_L(*global_edgeNum,
-                    ((long)TM_SHARED_READ_L(*global_edgeNum) + i_edgePtr));
+    TM_SHARED_WRITE_L(global_edgeNum,
+                    ((long)TM_SHARED_READ_L(global_edgeNum) + i_edgePtr));
     TM_END();
 
 
     thread_barrier_wait();
 
-    edgeNum = *global_edgeNum;
-    ULONGINT_T numEdgesPlacedOutside = *global_edgeNum;
+    edgeNum = global_edgeNum;
+    ULONGINT_T numEdgesPlacedOutside = global_edgeNum;
 
     for (i = i_edgeStartCounter[myId]; i < (long)i_edgeEndCounter[myId]; i++) {
         startVertex[i+numEdgesPlacedInCliques] = startV[i-i_edgeStartCounter[myId]];
@@ -1407,13 +1397,13 @@ genScalData (void* argPtr)
     }
 
     TM_BEGIN();
-    TM_SHARED_WRITE_L(*global_numStrWtEdges,
-                    ((long)TM_SHARED_READ_L(*global_numStrWtEdges) + numStrWtEdges));
+    TM_SHARED_WRITE_L(global_numStrWtEdges,
+                    ((long)TM_SHARED_READ_L(global_numStrWtEdges) + numStrWtEdges));
     TM_END();
 
     thread_barrier_wait();
 
-    numStrWtEdges = *global_numStrWtEdges;
+    numStrWtEdges = global_numStrWtEdges;
 
     if (myId == 0) {
         SDGdataPtr->strWeight =

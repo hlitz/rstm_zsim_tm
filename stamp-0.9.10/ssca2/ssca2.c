@@ -160,7 +160,7 @@ MAIN(argc, argv)
      */
 
     printf("\nScalable Data Generator - genScalData() beginning execution...\n");
-    genScalDataAlloc();
+
     SDGdata = (graphSDG*)SEQ_MALLOC(sizeof(graphSDG));
     assert(SDGdata);
 
@@ -215,7 +215,6 @@ MAIN(argc, argv)
 
     G = (graph*)SEQ_MALLOC(sizeof(graph));
     assert(G);
-    computeGraphAlloc();
 
     computeGraph_arg_t computeGraphArgs;
     computeGraphArgs.GPtr       = G;
@@ -271,7 +270,7 @@ MAIN(argc, argv)
     getStartListsArg.maxIntWtListSize    = &maxIntWtListSize;
     getStartListsArg.soughtStrWtListPtr  = &soughtStrWtList;
     getStartListsArg.soughtStrWtListSize = &soughtStrWtListSize;
-    getStartListsAlloc();
+
     // NB: Since ASF/PTLSim "REAL" is native execution, and since we are using
     //     wallclock time, we want to be sure we read time inside the
     //     simulator, or else we report native cycles spent on the benchmark
