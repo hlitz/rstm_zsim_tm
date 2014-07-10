@@ -106,11 +106,11 @@ namespace stm
       uint64_t      total_nontxn_time; // time on non-transactional work
 
     /*** PER_THREAD FIELDS to perform write skew detection */
-    std::map <uint64_t, uint64_t > stack_trace;
+    /*std::map <uint64_t, uint64_t > stack_trace;
     std::map <uint64_t, uint64_t > filtered_trace;
     std::vector < std::pair < uint64_t, uint64_t > > raw_write_set;
     std::vector < std::vector < uint64_t > > write_set;
-    std::vector < std::vector < backtrace_t > > raw_trace;
+    std::vector < std::vector < backtrace_t > > raw_trace;*/
       /*** POINTERS TO INSTRUMENTATION */
 
       /**

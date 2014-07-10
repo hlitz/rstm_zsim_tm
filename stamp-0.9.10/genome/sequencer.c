@@ -363,7 +363,7 @@ sequencer_run (void* argPtr)
         list_t* chainPtr = uniqueSegmentsPtr->buckets[i];
         list_iter_t it;
         list_iter_reset(&it, chainPtr);
-
+	//
         while (list_iter_hasNext(&it, chainPtr)) {
 
             char* segment =

@@ -68,12 +68,11 @@
  * =============================================================================
  */
 
-#include <stdio.h>
+
 #include <assert.h>
 #include <stdlib.h>
 #include "thread.h"
 #include "types.h"
-#include "stm/lib_hicamp.h"
 
 static THREAD_LOCAL_T    global_threadId;
 static long              global_numThread       = 1;
@@ -175,8 +174,7 @@ thread_start (void (*funcPtr)(void*), void* argPtr)
 
     long threadId = 0; /* primary */
     threadWait((void*)&threadId);
-
-   }
+}
 
 
 /* =============================================================================

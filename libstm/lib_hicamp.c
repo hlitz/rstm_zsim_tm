@@ -12,7 +12,7 @@ void* hcmalloc(size_t size){
 }
 
 void* hccalloc(size_t num, size_t size){
-  void * ptr = malloc(size);
+  void * ptr = calloc(num, size);
   //  printf( "APP calloc: %x\n", (unsigned long long)ptr);
   return ptr;
 }

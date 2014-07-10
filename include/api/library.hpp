@@ -54,6 +54,8 @@
 #include <stm/config.h>
 #include <common/platform.hpp>
 #include <stm/txthread.hpp>
+#include "spinlock-rtm.hpp"
+
 #define ZSIM_TM
 namespace stm
 {
@@ -203,16 +205,16 @@ namespace stm
 
   /***  Set up a thread's transactional context */
   inline void thread_init() { 
-#ifndef ZSIM_TM
+    //#ifndef ZSIM_TM
     TxThread::thread_init();
-#endif
+    //#endif
  }
 
   /***  Shut down a thread's transactional context */
   inline void thread_shutdown() { 
-#ifndef ZSIM_TM
+    //#ifndef ZSIM_TM
     TxThread::thread_shutdown();
-#endif
+    //#endif
  }
 
   /**
@@ -280,7 +282,10 @@ namespace stm
  *  This is the way to start a transaction
  */
 #ifdef ZSIM_TM
-#define TM_BEGIN(TYPE) asm(" movl $1040, %ecx\n\t"  "xchg %rcx, %rcx");
+#define TM_BEGIN(TYPE) stm::TxThread* tx = (stm::TxThread*)stm::Self;	\
+  rtm_glbl_spinlock_acquire(tx->id);
+
+//asm(" movl $1040, %ecx\n\t"  "xchg %rcx, %rcx");
 #else
 #define TM_BEGIN(TYPE)                                      \
     {                                                       \
@@ -296,7 +301,8 @@ namespace stm
  *  enforce lexical scoping
  */
 #ifdef ZSIM_TM
-#define TM_END asm(" movl $1041, %ecx\n\t"  "xchg %rcx, %rcx");
+#define TM_END  rtm_glbl_spinlock_release(tx->id);
+//asm(" movl $1041, %ecx\n\t"  "xchg %rcx, %rcx");
 #else
 
 #define TM_END                                  \

@@ -9,8 +9,6 @@
  */
 
 #include <stm/WBMMPolicy.hpp>
-//#include <iostream>
-//#include "stm/lib_hicamp.h"
 using namespace stm;
 
 namespace
@@ -34,10 +32,8 @@ void WBMMPolicy::handle_full_prelimbo()
 {
     // get the current timestamp from the epoch
     prelimbo->length = threadcount.val;
-    for (uint32_t i = 0, e = prelimbo->length; i < e; ++i){
+    for (uint32_t i = 0, e = prelimbo->length; i < e; ++i)
         prelimbo->ts[i] = trans_nums[i].val;
-	//std::cout << "timestamp prelimbo "  << prelimbo->ts[i] << std::endl;
-    }
 
     // push prelimbo onto the front of the limbo list:
     prelimbo->older = limbo;
@@ -65,17 +61,13 @@ void WBMMPolicy::handle_full_prelimbo()
         // free all blocks in each node's pool and free the node
         while (current != NULL) {
             // free blocks in current's pool
-	  for (unsigned long i = 0; i < current->POOL_SIZE; i++){
-	    //std::cout << "limbofor freein i " << i << " addr " << current->pool[i] << std::endl;
-	     
-	     hcfree(current->pool[i]);
-	  }
+            for (unsigned long i = 0; i < current->POOL_SIZE; i++)
+                free(current->pool[i]);
+
             // free the node and move on
             limbo_t* old = current;
             current = current->older;
-            hcfree(old);
-	    //std::cout << "limbo old adr " << old << std::endl;
-	   
+            free(old);
         }
     }
     prelimbo = new limbo_t();

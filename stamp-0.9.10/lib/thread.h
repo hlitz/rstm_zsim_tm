@@ -76,7 +76,6 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include "types.h"
-#include "stm/lib_hicamp.h"
 #ifdef OTM
 #include "omp.h"
 #endif
@@ -112,20 +111,13 @@ extern "C" {
 #define THREAD_COND_BROADCAST(cond)         pthread_cond_broadcast(&(cond))
 #define THREAD_COND_WAIT(cond, lock)        pthread_cond_wait(&(cond), &(lock))
 
+#ifdef SIMULATOR
 #  define THREAD_BARRIER_T                  pthread_barrier_t
 #  define THREAD_BARRIER_ALLOC(N)           ((THREAD_BARRIER_T*)malloc(sizeof(THREAD_BARRIER_T)))
 #  define THREAD_BARRIER_INIT(bar, N)       pthread_barrier_init(bar, 0, N)
 #  define THREAD_BARRIER(bar, tid)          pthread_barrier_wait(bar)
 #  define THREAD_BARRIER_FREE(bar)          free(bar)
-
-  /*
-#ifdef SIMULATOR
-#  define THREAD_BARRIER_T                  pthread_barrier_t
-#  define THREAD_BARRIER_ALLOC(N)           ((THREAD_BARRIER_T*)hcmalloc(sizeof(THREAD_BARRIER_T)))
-#  define THREAD_BARRIER_INIT(bar, N)       pthread_barrier_init(bar, 0, N)
-#  define THREAD_BARRIER(bar, tid)          pthread_barrier_wait(bar)
-#  define THREAD_BARRIER_FREE(bar)          hcfree(bar)
-#else // !SIMULATOR
+#else /* !SIMULATOR */
 
 #ifdef LOG_BARRIER
 #  define THREAD_BARRIER_T                  thread_barrier_t
@@ -139,9 +131,9 @@ extern "C" {
 #  define THREAD_BARRIER_INIT(bar, N)       barrier_init(bar, N)
 #  define THREAD_BARRIER(bar, tid)          barrier_cross(bar)
 #  define THREAD_BARRIER_FREE(bar)          barrier_free(bar)
-#endif // !LOG_BARRIER 
-#endif // !SIMULATOR 
-*/
+#endif /* !LOG_BARRIER */
+#endif /* !SIMULATOR */
+
 
 
 #ifdef LOG_BARRIER

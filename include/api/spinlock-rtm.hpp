@@ -42,6 +42,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <assert.h>
+#include <iostream>
+#include <string>
 
 #include <unistd.h>
 #include <pthread.h>
@@ -203,7 +205,7 @@ void ALWAYS_INLINE_RTM rtm_restart(){
 }
 
 void ALWAYS_INLINE_RTM hle_spinlock_acquire(uint64_t* lock, uint32_t tid) EXCLUSIVE_LOCK_FUNCTION(lock){
-  while (__sync_lock_test_and_set(lock, 1) != 0)
+ while (__sync_lock_test_and_set(lock, 1) != 0)
     {
       uint64_t val;
       do {
@@ -219,6 +221,8 @@ hle_spinlock_release(uint64_t* lock, uint32_t tid) UNLOCK_FUNCTION(lock)
 {
   __sync_lock_release(lock);
 }
+
+static bool TM_RETRY;
 
 void ALWAYS_INLINE_RTM
 rtm_spinlock_acquire(uint64_t* lock, uint32_t tid) EXCLUSIVE_LOCK_FUNCTION(lock)
@@ -239,7 +243,7 @@ unsigned int tm_status = 0;
     /* _xbegin could have had a conflict, been aborted, etc */
     if((tm_status & _XABORT_RETRY) && rtm_retries[tid*8]<4){
       //__sync_add_and_fetch(&g_rtm_retries, 1);
-      rtm_retries[tid*8]++;
+      //if(!TM_RETRY) rtm_retries[tid*8]++;
       _mm_pause();
       goto tm_try; // Retry 
     }
@@ -256,11 +260,6 @@ unsigned int tm_status = 0;
 
 void ALWAYS_INLINE_RTM
 rtm_glbl_spinlock_acquire(uint32_t tid){
-  static bool warned = false;
-  if(!warned){
-    warned = true;
-    std::cout<< std::hex <<" ++glbl addr " << (uint64_t)&(glbl_rtm_lock) << std::endl;
-  }
   rtm_spinlock_acquire(&glbl_rtm_lock, tid);
 }
 
@@ -286,7 +285,17 @@ rtm_glbl_spinlock_release(uint32_t tid){
 
  void ALWAYS_INLINE_RTM rtm_init()
  {
-      std::cout << "glbl_lock addr " << std::hex << (uint64_t)&(glbl_rtm_lock) << std::endl;
+   if(getenv("TM_RETRY") != NULL){
+     std::string str(getenv("TM_RETRY"));
+     if(str.compare("FALSE")==0)
+       TM_RETRY = false;
+     else
+       TM_RETRY = true;
+   }
+   else
+     TM_RETRY = true;
+   std::cout << "TM_RETRY env var: " << TM_RETRY << std::endl;
+   //      std::cout << "glbl_lock addr " << std::hex << (uint64_t)&(glbl_rtm_lock) << std::endl;
     glbl_rtm_lock = 0;
     __sync_lock_release(&glbl_rtm_lock);
 

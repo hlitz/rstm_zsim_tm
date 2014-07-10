@@ -255,7 +255,6 @@ TMheap_insert (TM_ARGDECL  heap_t* heapPtr, void* dataPtr)
         long newCapacity = capacity * 2;
         void** newElements = (void**)TM_MALLOC(newCapacity * sizeof(void*));
         if (newElements == NULL) {
-	  printf("malloc failed\n");
             return FALSE;
         }
         TM_SHARED_WRITE_L(heapPtr->capacity, newCapacity);

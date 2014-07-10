@@ -71,9 +71,6 @@
  */
 #define ZSIM_TM
 
-//#include "instrument_roi.h"
-#include "stm/lib_hicamp.h"
-
 #ifndef TM_H
 #define TM_H 1
 
@@ -423,12 +420,12 @@
 #      define TM_END_WAIVER()
 #      define thread_barrier_wait();    _Pragma ("omp barrier")
 
-#      define P_MALLOC(size)            hcmalloc(size)
-#      define P_FREE(ptr)               hcfree(ptr)
-#      define TM_MALLOC(size)           hcmalloc(size)
-#      define TM_FREE(ptr)              hcfree(ptr) /* TODO: fix memory free problem with OpenTM */
+#      define P_MALLOC(size)            malloc(size)
+#      define P_FREE(ptr)               /*free(ptr)*/
+#      define TM_MALLOC(size)           malloc(size)
+#      define TM_FREE(ptr)              /*free(ptr)  TODO: fix memory free problem with OpenTM */
 
-#    else /* !OTM */
+#    else /* !OTM  THIS PATH WE USE FOR ZSIM_TM */
 
 #      define TM_STARTUP(numThread)     STM_STARTUP(numThread)
 #      define TM_SHUTDOWN()             STM_SHUTDOWN()
@@ -439,13 +436,13 @@
 #      define TM_BEGIN_WAIVER()
 #      define TM_END_WAIVER()
 
-#      define P_MALLOC(size)            hcmalloc(size)
-#      define P_FREE(ptr)               hcfree(ptr)
-#      define SEQ_MALLOC(size)          hcmalloc(size)
-#      define SEQ_FREE(ptr)             hcfree(ptr)
+#      define P_MALLOC(size)            malloc(size)
+#      define P_FREE(ptr)               /*free(ptr)*/
+#      define SEQ_MALLOC(size)          malloc(size)
+#      define SEQ_FREE(ptr)             /*free(ptr)*/
 
 #      define TM_MALLOC(size)           TM_ALLOC(size)
-//#      define TM_FREE(ptr)              hcfree(ptr)
+//#      define TM_FREE(ptr)              free(ptr)
 //#      define TM_FREE(ptr)              STM_FREE(ptr)
 #    endif /* !OTM */
 
@@ -516,12 +513,12 @@
 #      define TM_END_WAIVER()
 #  endif
 
-#  define P_MALLOC(size)                hcmalloc(size)
-#  define P_FREE(ptr)                   hcfree(ptr)
-#  define TM_MALLOC(size)               hcmalloc(size)
-#  define TM_FREE(ptr)                  hcfree(ptr)
-#  define SEQ_MALLOC(size)              hcmalloc(size)
-#  define SEQ_FREE(ptr)                 hcfree(ptr)
+#  define P_MALLOC(size)                malloc(size)
+#  define P_FREE(ptr)                   /*free(ptr)*/
+#  define TM_MALLOC(size)               malloc(size)
+#  define TM_FREE(ptr)                  /*free(ptr)*/
+#  define SEQ_MALLOC(size)              malloc(size)
+#  define SEQ_FREE(ptr)                 /*free(ptr)*/
 
 #  define TM_BEGIN()                    __transaction [[relaxed]] {
 #  define TM_BEGIN_RO()                 __transaction [[relaxed]] {
@@ -562,10 +559,10 @@
 
 #  else /* !SIMULATOR */
 
-#    define P_MALLOC(size)              hcmalloc(size)
-#    define P_FREE(ptr)                 hcfree(ptr)
-#    define TM_MALLOC(size)             hcmalloc(size)
-#    define TM_FREE(ptr)                hcfree(ptr)
+#    define P_MALLOC(size)              malloc(size)
+#    define P_FREE(ptr)                 /*free(ptr)*/
+#    define TM_MALLOC(size)             malloc(size)
+#    define TM_FREE(ptr)                /*free(ptr)*/
 
 #  endif /* !SIMULATOR */
 
@@ -693,8 +690,8 @@
  */
 #if defined(ITM)
 extern "C" {
-[[transaction_safe]] void* hcmalloc(size_t) __THROW;
-[[transaction_safe]] void hcfree(void*) __THROW;
+[[transaction_safe]] void* malloc(size_t) __THROW;
+[[transaction_safe]] void free(void*) __THROW;
 }
 #endif
 

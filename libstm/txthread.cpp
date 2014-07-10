@@ -17,7 +17,7 @@
 #include "algs/algs.hpp"
 #include "inst.hpp"
 #include <fstream>
-#include "stm/lib_hicamp.h"
+//#include "stm/lib_hicamp.h"
 
 using namespace stm;
 

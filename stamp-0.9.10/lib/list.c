@@ -659,15 +659,14 @@ TMlist_insert (TM_ARGDECL  list_t* listPtr, void* dataPtr)
     list_node_t* prevPtr;
     list_node_t* nodePtr;
     list_node_t* currPtr;
-    
+
     prevPtr = TMfindPrevious(TM_ARG  listPtr, dataPtr);
     currPtr = (list_node_t*)TM_SHARED_READ_P(prevPtr->nextPtr);
 
 #ifdef LIST_NO_DUPLICATES
     if ((currPtr != NULL) &&
         listPtr->comparator->compare_tm(TM_ARG TM_SHARED_READ_P(currPtr->dataPtr), dataPtr) == 0) {
-      //printf("currPtr %p dataptr %p %i\n", currPtr, currPtr->dataPtr, listPtr->comparator->compare_notm(currPtr->dataPtr, dataPtr));
-      return FALSE;
+        return FALSE;
     }
 #endif
 
